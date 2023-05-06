@@ -11,7 +11,7 @@ export const meta: V2_MetaFunction = () => {
 };
 
 export async function loader() {
-  const res = await fetch("https://api.themoviedb.org/3/trending/movie/week?language=en", {
+  const res = await fetch(`${process.env.TMDB_API_URL}/trending/movie/week?language=en`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization':`Bearer ${process.env.TMDB_API_KEY}`,
