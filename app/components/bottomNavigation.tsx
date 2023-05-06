@@ -32,6 +32,7 @@ export default function BottomNavigation() {
           <NavLink
             key={menuItem.label}
             to={menuItem.path}
+            prefetch="render"
             className={() =>
               `block flex-1 py-1 px-3 ${
                 isActive(menuItem)
