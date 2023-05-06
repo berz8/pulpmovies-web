@@ -31,11 +31,13 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background text-slate-100 lg:pl-[120px] lg:pr-4">
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
+      <body className="bg-background w-full min-h-full">
+        <div className="w-full min-h-full lg:px-40 lg:max-w-[1400px] m-auto">
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </div>
       </body>
     </html>
   );
