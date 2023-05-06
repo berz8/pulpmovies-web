@@ -1,5 +1,7 @@
-import { Movie } from "./movie"
+import type { Movie } from "./movie";
+import type { MovieDetail } from "./movieDetail";
 
-export {
+export type {
   Movie,
+  MovieDetail,
 }
