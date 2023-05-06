@@ -9,6 +9,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import stylesheet from "~/tailwind.css";
+import BottomNavigation from "./components/bottomNavigation";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -37,6 +38,7 @@ export default function App() {
           <ScrollRestoration />
           <Scripts />
           <LiveReload />
+          <BottomNavigation />
         </div>
       </body>
     </html>
