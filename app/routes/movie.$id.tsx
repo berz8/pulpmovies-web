@@ -3,7 +3,9 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { format, intervalToDuration } from "date-fns";
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import type { MovieDetail } from "~/interfaces";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { motion, useAnimate } from "framer-motion";
+import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
 
 export async function loader({ params }: LoaderArgs) {
   const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=watch/providers,credits`, {
@@ -29,6 +31,9 @@ export const meta: V2_MetaFunction = ({ data }) => ([
 export default function MovieId() {
 
   const { movie } = useLoaderData<typeof loader>();
+
+  const [fullScreenPoster, setFullScreenPoster] = useState(false);
+  const animate = useAnimate();
 
   const formattedRuntime = useMemo((): string => {
     const runtimeMinute = movie.runtime;
@@ -84,11 +89,16 @@ export default function MovieId() {
           )}
         </div>
       )}
-      <h1 className="text-gray-100 text-center text-4xl px-4 -mt-12 relative font-bold">
+      <h1 className="text-gray-100 text-center text-3xl px-4 -mt-12 relative font-bold">
         {movie.title}
       </h1>
       <div className="text-center">
         {getDirectors(movie.credits.crew)}
+      </div>
+      <div className="flex px-3 pt-4">
+        <div className="w-[100px] lg:w-[250px]">
+          <MoviePosterAnimated posterPath={movie.poster_path} title={movie.title} />
+        </div>
       </div>
     </div>
   )

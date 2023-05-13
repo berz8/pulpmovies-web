@@ -22,11 +22,10 @@ export default function BottomNavigation() {
     }, [location])
 
   return (
-    <div className="fixed left-0 bottom-0 flex w-full lg:bottom-auto lg:left-4 lg:top-1/2 lg:w-auto lg:-translate-y-1/2 z-50">
+    <div className="fixed left-0 bottom-0 flex w-full lg:bottom-auto lg:left-4 lg:top-1/2 lg:w-auto lg:-translate-y-1/2 z-40">
       <div
         className="shadow-up m-3 mb-[CALC(0.5rem_+_env(safe-area-inset-bottom))] flex w-full justify-around gap-x-1 bg-[rgba(205,205,205,0.3)] py-2 px-2 backdrop-blur-lg rounded-xl
                  lg:flex-col lg:rounded-lg lg:gap-y-4"
-        style={{WebkitBackdropFilter: "blur(16px)"}}
       >
         {menuItems.map(menuItem => (
           <NavLink
