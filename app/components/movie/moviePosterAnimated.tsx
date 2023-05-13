@@ -26,15 +26,24 @@ export default function MoviePosterAnimated({ posterPath, title }: Props){
             className="fixed w-full h-full p-10 top-0 left-0 flex flex-col gap-4 items-center justify-center z-50 bg-[rgba(0,0,0,0.4)] backdrop-blur-sm"
             onClick={() => setFullscreen(false)}
             onDrag={() => setFullscreen(false)}
-            initial={{ opacity: 0, scale: 0.5, translateX: "-50%" }}
-            animate={{ opacity: 1, scale: 1, translateX: 0 }}
-            exit={{ opacity: 0, scale: 0.5, translateX: "-50%" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{
               ease: "linear",
               duration: 0.2
             }}
           >
-              <motion.img src={`https://image.tmdb.org/t/p/original${posterPath}`} alt={`${title}`} className="rounded-xl" />
+              <motion.img
+                src={`https://image.tmdb.org/t/p/original${posterPath}`} alt={`${title}`} className="rounded-xl"
+                initial={{ scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.6 }}
+                transition={{
+                  ease: "linear",
+                  duration: 0.2
+                }}
+              />
               <motion.h1 className="text-gray-100 text-center text-xl font-bold italic">{title}</motion.h1>
           </motion.div>   
         }
