@@ -6,6 +6,7 @@ import type { MovieDetail } from "~/interfaces";
 import { useCallback, useMemo, useState } from "react";
 import { motion, useAnimate } from "framer-motion";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
+import MovieRating from "~/components/movie/movieRating";
 
 export async function loader({ params }: LoaderArgs) {
   const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=watch/providers,credits`, {
@@ -32,8 +33,7 @@ export default function MovieId() {
 
   const { movie } = useLoaderData<typeof loader>();
 
-  const [fullScreenPoster, setFullScreenPoster] = useState(false);
-  const animate = useAnimate();
+  const [showFullOverview, setShowFullOverview] = useState(false);
 
   const formattedRuntime = useMemo((): string => {
     const runtimeMinute = movie.runtime;
@@ -99,6 +99,16 @@ export default function MovieId() {
         <div className="w-[100px] lg:w-[250px]">
           <MoviePosterAnimated posterPath={movie.poster_path} title={movie.title} />
         </div>
+        <div
+          className={`w-[CALC(100%_-_100px)] pl-3 lg:pl-6 overflow-hidden relative ${!showFullOverview && 'max-h-[150px]'}`}
+          onClick={() => setShowFullOverview(!showFullOverview)}
+        >
+          <p className="text-gray-300 text-sm lg:text-lg">{movie.overview}</p>
+          <div className={`absolute bottom-0 left-0 z-0 h-8 w-full bg-gradient-to-t from-[#252D46] via-[rgba(37,45,70,0.7)] to-[rgba(37,45,70,0)] dark:from-[#222326] ${showFullOverview && 'opacity-0'}`} />
+        </div>
+      </div>
+      <div className="px-3 mt-4 flex items-center">
+        <MovieRating rating={movie.vote_average} />
       </div>
     </div>
   )
