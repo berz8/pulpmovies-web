@@ -25,11 +25,13 @@ export interface MovieDetail {
   vote_average: number
   vote_count: number
   "watch/providers": {
-    IT: WatchProviders
+    results: {
+      IT: WatchProviders,
+      EN: WatchProviders
+    }
   },
   credits: {
-    cast: CastPerson[]
-    crew: CrewPerson[]
+    [key in creditsTypes]: CastPerson[]
   }
 }
 
@@ -64,7 +66,7 @@ export interface SpokenLanguage {
 }
 
 export interface WatchProviders {
-  flat: WatchProvider[] 
+  flatrate: WatchProvider[] 
   rent: WatchProvider[]
   buy: WatchProvider[]
   ads: WatchProvider[]
@@ -104,4 +106,9 @@ export interface CrewPerson {
   credit_id: string
   department: string
   job: string
+}
+
+export enum creditsTypes {
+  cast = 'cast',
+  crew = 'crew'
 }

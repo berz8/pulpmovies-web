@@ -4,12 +4,16 @@ import { format, intervalToDuration } from "date-fns";
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import type { MovieDetail } from "~/interfaces";
 import { useCallback, useMemo, useState } from "react";
-import { motion, useAnimate } from "framer-motion";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
 import MovieRating from "~/components/movie/movieRating";
+import MovieWatchProviders from "~/components/movie/movieWatchProviders";
+import { SegmentedControls } from "~/components/ui/segmentedControls";
+import { motion } from "framer-motion";
+import { MoviePerson } from "~/components/movie/moviePerson";
+import { creditsTypes } from "~/interfaces/movieDetail";
 
 export async function loader({ params }: LoaderArgs) {
-  const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=watch/providers,credits`, {
+  const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=credits,watch/providers`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization':`Bearer ${process.env.TMDB_API_KEY}`,
@@ -32,8 +36,13 @@ export const meta: V2_MetaFunction = ({ data }) => ([
 export default function MovieId() {
 
   const { movie } = useLoaderData<typeof loader>();
+  const details: { id: number, label: string, value: creditsTypes }[] = [
+    {id: 0, label: "Cast", value: creditsTypes.cast },
+    {id: 1, label: "Crew", value: creditsTypes.crew }
+  ];
 
   const [showFullOverview, setShowFullOverview] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState(0);
 
   const formattedRuntime = useMemo((): string => {
     const runtimeMinute = movie.runtime;
@@ -62,7 +71,7 @@ export default function MovieId() {
     )),[]);
   
   return (
-    <div>
+    <div className="pb-24">
       {movie && (
         <div className="pt-3 pb-4">
           {movie.backdrop_path ? (
@@ -107,8 +116,23 @@ export default function MovieId() {
           <div className={`absolute bottom-0 left-0 z-0 h-8 w-full bg-gradient-to-t from-[#252D46] via-[rgba(37,45,70,0.7)] to-[rgba(37,45,70,0)] dark:from-[#222326] ${showFullOverview && 'opacity-0'}`} />
         </div>
       </div>
-      <div className="px-3 mt-4 flex items-center">
+      <div className="px-3 mt-5 flex items-center">
         <MovieRating rating={movie.vote_average} />
+      </div>
+      { (Object.keys(movie['watch/providers'].results).length > 0 && movie['watch/providers'].results.IT) && (
+        <div className="mt-5 px-3">
+          <MovieWatchProviders watchProviders={movie['watch/providers'].results} />
+        </div>
+      )}
+      <div className="px-3 mt-5">
+        <motion.div className="p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md">
+          <SegmentedControls items={details} selected={selectedDetail} setSelected={setSelectedDetail} />
+          <motion.div className="flex gap-3 overflow-scroll p-2 scrollbar-hide">
+            { movie.credits[details[selectedDetail].value].map(person => (
+                <MoviePerson key={person.id + person.cast_id + person.credit_id} person={person} />
+            ))}
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   )

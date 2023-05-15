@@ -1,7 +1,8 @@
 import type { Movie } from "./movie";
-import type { MovieDetail } from "./movieDetail";
+import type { MovieDetail, WatchProviders } from "./movieDetail";
 
 export type {
   Movie,
   MovieDetail,
+  WatchProviders
 }
