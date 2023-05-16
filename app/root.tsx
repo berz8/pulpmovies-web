@@ -21,7 +21,7 @@ export default function App() {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
         <meta name="theme-color" content="#252D46" />
         <link rel="icon" href="/favicon.ico" type="image/ico" />
         <link rel="apple-touch-icon" sizes="512x512" href="images/512.png" />
@@ -33,7 +33,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background w-full min-h-full">
+      <body className="bg-background">
         <div className="w-full min-h-full lg:px-40 lg:max-w-[1400px] m-auto">
           <Outlet />
           <ScrollRestoration />
