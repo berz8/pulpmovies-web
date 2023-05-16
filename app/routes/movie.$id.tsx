@@ -10,7 +10,7 @@ import MovieWatchProviders from "~/components/movie/movieWatchProviders";
 import { SegmentedControls } from "~/components/ui/segmentedControls";
 import { motion } from "framer-motion";
 import { MoviePerson } from "~/components/movie/moviePerson";
-import { creditsTypes } from "~/interfaces/movieDetail";
+import { CrewPerson, creditsTypes } from "~/interfaces/movieDetail";
 
 export async function loader({ params }: LoaderArgs) {
   const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=credits,watch/providers`, {
@@ -58,15 +58,15 @@ export default function MovieId() {
     return `${runtimeObject.minutes}m`;
   }, [movie]);
 
-  const getDirectors = useCallback((_directors: any = []) => _directors
-    .filter((director: any) => director.job === 'Director')
-    .map((director: any, index: number, filteredDirectos: []) => (
+  const getDirectors = useCallback((_directors: CrewPerson[] = []) => _directors
+    .filter((director) => director.job === 'Director')
+    .map((director, index: number, filteredDirectors: CrewPerson[]) => (
       <Link
         to={`/cast/${director.id}`}
         key={director.id}
         className="font-bold italic text-center text-gray-300 relative"
       >
-        {`${director.name}${(filteredDirectos.length > 1 && (filteredDirectos.length - 1 !== index)) ? ', ' : ''}`}
+        {`${director.name}${(filteredDirectors.length > 1 && (filteredDirectors.length - 1 !== index)) ? ', ' : ''}`}
       </Link>
     )),[]);
   
@@ -129,7 +129,7 @@ export default function MovieId() {
           <SegmentedControls items={details} selected={selectedDetail} setSelected={setSelectedDetail} />
           <motion.div className="flex gap-3 overflow-scroll p-2 scrollbar-hide">
             { movie.credits[details[selectedDetail].value].map(person => (
-                <MoviePerson key={person.id + person.cast_id + person.credit_id} person={person} />
+                <MoviePerson key={person.id + person.credit_id} person={person} />
             ))}
           </motion.div>
         </motion.div>

@@ -1,3 +1,8 @@
+export enum creditsTypes {
+  cast = 'cast',
+  crew = 'crew'
+}
+
 export interface MovieDetail {
   adult: boolean
   backdrop_path: string
@@ -31,7 +36,8 @@ export interface MovieDetail {
     }
   },
   credits: {
-    [key in creditsTypes]: CastPerson[]
+    [creditsTypes.cast]: CastPerson[]
+    [creditsTypes.crew]: CrewPerson[]
   }
 }
 
@@ -106,9 +112,4 @@ export interface CrewPerson {
   credit_id: string
   department: string
   job: string
-}
-
-export enum creditsTypes {
-  cast = 'cast',
-  crew = 'crew'
 }

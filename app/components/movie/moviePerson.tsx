@@ -1,4 +1,4 @@
-import { CastPerson, CrewPerson } from "~/interfaces/movieDetail"
+import type { CastPerson, CrewPerson } from "~/interfaces/movieDetail"
 
 export function MoviePerson({ person }: Props) {
   return (
