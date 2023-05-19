@@ -6,9 +6,10 @@ import type { V2_MetaFunction } from "@remix-run/node";
 import type { Movie } from "../interfaces";
 import MovieCard from "../components/movie/movieCard";
 
-export const meta: V2_MetaFunction = () => {
-  return [{ title: "PulpMovies" }];
-};
+export const meta: V2_MetaFunction = () => ([
+  { title: "PulpMovies" },
+  { property: "og:image", content: "https://pulpmovies.app/images/pulpmovies-og.jpg"},
+]);
 
 export async function loader() {
   const res = await fetch(`${process.env.TMDB_API_URL}/trending/movie/week?language=en`, {
