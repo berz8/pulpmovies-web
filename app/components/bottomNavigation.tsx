@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 const menuItems: MenuItem[] = [
   {id: 0, label: "Home", path: "/", matchingPaths: ["/"]},
 //  {label: "Watchlist", path: "/lists"},
-  {id: 1, label: "Search", path: "/search", matchingPaths: ["/search","/movie"]},
+  {id: 1, label: "Search", path: "/search", matchingPaths: ["/search","/movie", "/person"]},
 //  {label: "Profile", path: "/user"}
 ]
 
