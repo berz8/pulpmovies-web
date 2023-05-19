@@ -1,11 +1,11 @@
 import { LoaderArgs, V2_MetaFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import MovieCard from "~/components/movie/movieCard";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
 import { SegmentedControls, TmdbCredits } from "~/components/ui";
-import { Movie } from "~/interfaces";
-import type { CastCredit, CrewCredit, Person } from "~/interfaces/person";
+import type { Movie } from "~/interfaces";
+import type { PersonDetail } from "~/interfaces/personDetail";
 
 export async function loader({ params }: LoaderArgs) {
   const res = await fetch(`${process.env.TMDB_API_URL}/person/${params.id}?language=en&append_to_response=movie_credits`, {
@@ -15,7 +15,7 @@ export async function loader({ params }: LoaderArgs) {
     }
   });
 
-  const person: Person  = await res.json();
+  const person: PersonDetail  = await res.json();
 
   if (!person || !person.id) {
     throw new Response("Not Found", { status: 404 });

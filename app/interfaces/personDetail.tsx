@@ -1,7 +1,7 @@
 import type { Movie } from "./movie"
 import type { creditsTypes } from "./movieDetail"
 
- export interface Person {
+ export interface PersonDetail {
   adult: boolean
   also_known_as: string[]
   biography: string
