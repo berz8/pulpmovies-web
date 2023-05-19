@@ -10,10 +10,11 @@ import MovieWatchProviders from "~/components/movie/movieWatchProviders";
 import { SegmentedControls, TmdbCredits } from "~/components/ui";
 import { motion } from "framer-motion";
 import { MoviePerson } from "~/components/movie/moviePerson";
-import { CrewPerson, creditsTypes } from "~/interfaces/movieDetail";
+import { CrewPerson, Video, creditsTypes } from "~/interfaces/movieDetail";
+import { IconShare, IconVideo } from "~/components/icons";
 
 export async function loader({ params }: LoaderArgs) {
-  const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=credits,watch/providers`, {
+  const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=credits,videos,watch/providers`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization':`Bearer ${process.env.TMDB_API_KEY}`,
@@ -29,11 +30,12 @@ export async function loader({ params }: LoaderArgs) {
 };
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => ([
-  { title: `${data.movie?.title} (${format(new Date(data.movie?.release_date), "yyyy")})` },
-  { property: "og:title", content: `${data.movie?.title} (${format(new Date(data.movie?.release_date), "yyyy")})` },
+  { title: `${data.movie?.title} (${data.movie.release_date && format(new Date(data.movie?.release_date), "yyyy")})` },
+  { property: "og:title", content: `${data.movie?.title} (${data.movie.release_date && format(new Date(data.movie?.release_date), "yyyy")})` },
   { property: "description", content: data.movie.overview },
   { property: "og:description", content: data.movie.overview },
   { property: "og:image", content: `https://image.tmdb.org/t/p/original${data.movie.backdrop_path}`},
+  { property: "og:site_name", content: "PulpMovies" },
 ]);
 
 
@@ -73,6 +75,33 @@ export default function MovieId() {
         {`${director.name}${(filteredDirectors.length > 1 && (filteredDirectors.length - 1 !== index)) ? ', ' : ''}`}
       </Link>
     )),[]);
+
+  const getTrailer = useCallback((videos: Video[]) => {
+    const trailer = videos.find(video => video.type === "Trailer" && video.site === "YouTube");
+    if(!trailer) return null;
+    return (
+        <a
+          href={`https://youtube.com/watch?v=${trailer.key}`}
+          rel="noreferrer"
+          target="_blank"
+          className="grow p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md text-gray-200 flex gap-2 justify-center">
+          <IconVideo />
+          <span>Trailer</span>
+        </a>
+    )
+  },[])
+
+  const shareSheet = () => {
+    if(navigator.share) {
+      navigator.share({
+        title: `${movie?.title} (${format(new Date(movie?.release_date), "yyyy")})`,
+        url: `https://pulpmovies.app/movie/${movie.id}`
+      }).then(() => {
+        console.log('Thanks for sharing!');
+      })
+      .catch(console.error);
+    }
+  }
   
   return (
     <div className="pb-32">
@@ -137,6 +166,15 @@ export default function MovieId() {
             ))}
           </motion.div>
         </motion.div>
+      </div>
+      <div className="px-3 mt-5 flex gap-2">
+        {movie.videos.results && getTrailer(movie.videos.results)}
+        <div
+          onClick={() => shareSheet()}
+          className="grow p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md text-gray-200 flex gap-2 justify-center cursor-pointer">
+          <IconShare />
+          <span>Share</span>
+        </div>
       </div>
       <div className="px-3 mt-5 flex flex-col gap-2">
         <div className="py-2 border-b border-gray-600">

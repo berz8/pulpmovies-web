@@ -10,6 +10,7 @@ import { TmdbCredits } from "~/components/ui";
 export const meta: V2_MetaFunction = () => ([
   { title: "PulpMovies" },
   { property: "og:image", content: "https://pulpmovies.app/images/pulpmovies-og.jpg"},
+  { property: "og:site_name", content: "PulpMovies" },
 ]);
 
 export async function loader() {
