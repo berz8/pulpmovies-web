@@ -1,9 +1,11 @@
 import { LoaderArgs, V2_MetaFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useMemo, useState } from "react";
+import MovieCard from "~/components/movie/movieCard";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
 import { SegmentedControls, TmdbCredits } from "~/components/ui";
-import type { Person } from "~/interfaces/person";
+import { Movie } from "~/interfaces";
+import type { CastCredit, CrewCredit, Person } from "~/interfaces/person";
 
 export async function loader({ params }: LoaderArgs) {
   const res = await fetch(`${process.env.TMDB_API_URL}/person/${params.id}?language=en&append_to_response=movie_credits`, {
@@ -69,11 +71,13 @@ export default function PersonId() {
   const [showFullOverview, setShowFullOverview] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(defaultSelectedcategory());
 
+  const sortByPopularity = <T extends Movie>(movies: T[]): T[] => movies.sort((a,b) => b.popularity - a.popularity)
+
   return (
     <div className="pb-32">
       <div className="px-3 mt-4">
         <h1 className="text-gray-100 text-center text-3xl px-4 relative font-bold">
-          {person.name} {person.known_for_department}
+          {person.name}
         </h1>
       </div>
       <div className="flex px-3 pt-4">
@@ -91,6 +95,31 @@ export default function PersonId() {
       <div className="px-3 mt-4">
         <div className="p-1 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md">
           <SegmentedControls items={creditsCategories()} selected={selectedCategory} setSelected={setSelectedCategory} />
+        </div>
+        <div className="py-3 flex flex-wrap gap-3 -mr-3">
+          { selectedCategory.value === "acting" 
+            && sortByPopularity(person.movie_credits.cast).map(movie => (
+                <MovieCard movie={movie} key={movie.id} />
+              ))
+          }
+          { selectedCategory.value === "directing" 
+            && sortByPopularity(person.movie_credits.crew)
+                .filter((movie) => movie.job === "Director")
+                .map(movie => (
+                  <MovieCard movie={movie} key={movie.id+movie.credit_id} />
+                ))
+          }
+          { selectedCategory.value === "crew" 
+            && sortByPopularity(person.movie_credits.crew)
+              .filter((value, index, self) =>
+                index === self.findIndex((t) => (
+                t.id === value.id
+              ))
+            )
+            .map(movie => (
+                <MovieCard movie={movie} key={movie.id} />
+              ))
+          }
         </div>
       </div>
       <TmdbCredits />

@@ -3,12 +3,20 @@ import { useEffect, useState } from "react";
 
 export default function MoviePosterAnimated({ posterPath, title }: Props){
 
+  const _posterPath = !posterPath ? {
+      normal: "/images/fallback-movie.jpg",
+      full: "/images/fallback-movie.jpg",
+    } : {
+      normal: `https://image.tmdb.org/t/p/w500${posterPath}`,
+      full: `https://image.tmdb.org/t/p/original${posterPath}`
+    }
+
   const [fullscreen, setFullscreen] = useState<boolean>(false)
 
   useEffect(() => {
     // Preload fullsize image
     const img = document.createElement('img');
-    img.src = `https://image.tmdb.org/t/p/original${posterPath}`
+    img.src = _posterPath.full; 
   })
 
   return (
@@ -17,7 +25,7 @@ export default function MoviePosterAnimated({ posterPath, title }: Props){
         className="w-full"
         onClick={() => setFullscreen(true)}
       >
-        <motion.img src={`https://image.tmdb.org/t/p/w500${posterPath}`} alt={`${title}`} className="rounded-md" />
+        <motion.img src={_posterPath.normal} alt={`${title}`} className="rounded-md" />
       </motion.div>
 
       <AnimatePresence>
@@ -35,7 +43,7 @@ export default function MoviePosterAnimated({ posterPath, title }: Props){
             }}
           >
               <motion.img
-                src={`https://image.tmdb.org/t/p/original${posterPath}`} alt={`${title}`} className="rounded-xl"
+                src={_posterPath.full} alt={`${title}`} className="rounded-xl"
                 initial={{ scale: 0.6 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.6 }}
@@ -53,6 +61,6 @@ export default function MoviePosterAnimated({ posterPath, title }: Props){
 }
 
 interface Props {
-  posterPath: string
+  posterPath: string | null
   title: string
 }
