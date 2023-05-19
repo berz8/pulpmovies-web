@@ -71,7 +71,7 @@ export default function MovieId() {
     )),[]);
   
   return (
-    <div className="pb-24">
+    <div className="pb-32">
       {movie && (
         <div className="pt-3 pb-4">
           {movie.backdrop_path ? (
@@ -133,6 +133,24 @@ export default function MovieId() {
             ))}
           </motion.div>
         </motion.div>
+      </div>
+      <div className="px-3 mt-5 flex flex-col gap-2">
+        <div className="py-2 border-b border-gray-600">
+          <span className="block text-xs text-gray-200 font-bold">Genre</span>
+          <span className="block text-sm text-gray-300">{movie.genres.map(x => x.name).join(", ")}</span>
+        </div>
+        <div className="py-2 border-b border-gray-600">
+          <span className="block text-xs text-gray-200 font-bold">Original Title</span>
+          <span className="block text-sm text-gray-300">{movie.original_title}</span>
+        </div>
+        <div className="py-2 border-b border-gray-600">
+          <span className="block text-xs text-gray-200 font-bold">Languages</span>
+          <span className="block text-sm text-gray-300">{movie.spoken_languages.map(x => x.english_name).join(", ")}</span>
+        </div>
+        <div className="py-2">
+          <span className="block text-xs text-gray-200 font-bold">Production Companies</span>
+          <span className="block text-sm text-gray-300">{movie.production_companies.map(x => x.name).join(", ")}</span>
+        </div>
       </div>
     </div>
   )
