@@ -1,15 +1,18 @@
 import { Link } from "@remix-run/react";
-import { Movie } from "../../interfaces";
+import type { Movie } from "../../interfaces";
 import { format } from "date-fns";
 
 export function MovieSearchCard({ movie }: Props) {
+
+  const posterPath = !movie.poster_path ? "/images/fallback-movie.jpg" : `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+
   return (
    <Link
     to={`/movie/${movie.id}`}
     className="mb-2 flex shadow-lg bg-cover bg-center rounded-lg overflow-hidden backdrop-blur-0 p-2 relative lg:basis-[CALC(50%_-_2rem)] lg:mb-0 bg-[rgba(0,0,0,0.3)]" >
       <div className="w-[60px] relative z-20 min-h-[80px]">
         <img
-          src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+          src={posterPath}
           alt=""
           className="rounded-lg shadow-lg"
           loading="lazy"
