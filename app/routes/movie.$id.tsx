@@ -42,13 +42,13 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => ([
 export default function MovieId() {
 
   const { movie } = useLoaderData<typeof loader>();
-  const details: { id: number, label: string, value: creditsTypes }[] = [
-    {id: 0, label: "Cast", value: creditsTypes.cast },
-    {id: 1, label: "Crew", value: creditsTypes.crew }
+  const details: {label: string, value: creditsTypes }[] = [
+    {label: "Cast", value: creditsTypes.cast },
+    {label: "Crew", value: creditsTypes.crew }
   ];
 
   const [showFullOverview, setShowFullOverview] = useState(false);
-  const [selectedDetail, setSelectedDetail] = useState(0);
+  const [selectedDetail, setSelectedDetail] = useState({value: creditsTypes.cast, index: 0});
 
   const formattedRuntime = useMemo((): string => {
     const runtimeMinute = movie.runtime;
@@ -161,7 +161,7 @@ export default function MovieId() {
         <motion.div className="p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md">
           <SegmentedControls items={details} selected={selectedDetail} setSelected={setSelectedDetail} />
           <motion.div className="flex gap-3 overflow-scroll p-2 scrollbar-hide">
-            { movie.credits[details[selectedDetail].value].map(person => (
+            { movie.credits[selectedDetail.value].map(person => (
                 <MoviePerson key={person.id + person.credit_id} person={person} />
             ))}
           </motion.div>
