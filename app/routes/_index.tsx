@@ -5,6 +5,7 @@ import { useLoaderData } from "@remix-run/react";
 import type { V2_MetaFunction } from "@remix-run/node";
 import type { Movie } from "../interfaces";
 import MovieCard from "../components/movie/movieCard";
+import { TmdbCredits } from "~/components/ui";
 
 export const meta: V2_MetaFunction = () => ([
   { title: "PulpMovies" },
@@ -44,6 +45,7 @@ export default function Index() {
           </div>
         </>
       )}
+      <TmdbCredits />
     </div>
   );
 }

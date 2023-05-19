@@ -7,7 +7,7 @@ import { useCallback, useMemo, useState } from "react";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
 import MovieRating from "~/components/movie/movieRating";
 import MovieWatchProviders from "~/components/movie/movieWatchProviders";
-import { SegmentedControls } from "~/components/ui/segmentedControls";
+import { SegmentedControls, TmdbCredits } from "~/components/ui";
 import { motion } from "framer-motion";
 import { MoviePerson } from "~/components/movie/moviePerson";
 import { CrewPerson, creditsTypes } from "~/interfaces/movieDetail";
@@ -156,6 +156,7 @@ export default function MovieId() {
           <span className="block text-sm text-gray-300">{movie.production_companies.map(x => x.name).join(", ")}</span>
         </div>
       </div>
+      <TmdbCredits />
     </div>
   )
 }

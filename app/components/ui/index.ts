@@ -1,5 +1,7 @@
 import { SegmentedControls } from "./segmentedControls"
+import { TmdbCredits } from "./tmdbCredits"
 
-export default {
-    SegmentedControls
+export {
+    SegmentedControls,
+    TmdbCredits
 }

@@ -3,7 +3,7 @@
     "short_name": "PulpMovies",
     "background_color": "#ffffff",
     "theme_color": "#6400E2",
-    "display": "fullscreen",
+    "display": "standalone",
     "orientation": "portrait",
     "scope": "/",
     "start_url": "/",
