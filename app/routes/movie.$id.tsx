@@ -28,8 +28,12 @@ export async function loader({ params }: LoaderArgs) {
   return json({ movie });
 };
 
-export const meta: V2_MetaFunction = ({ data }) => ([
-  { title: `${data.movie?.title} (${format(new Date(data.movie?.release_date), "yyyy")}) - Pulpmovies` }
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => ([
+  { title: `${data.movie?.title} (${format(new Date(data.movie?.release_date), "yyyy")})` },
+  { property: "og:title", content: data.movie.title },
+  { property: "description", content: data.movie.overview },
+  { property: "og:description", content: data.movie.overview },
+  { property: "og:image", content: `https://image.tmdb.org/t/p/original${data.movie.backdrop_path}`},
 ]);
 
 
