@@ -41,10 +41,10 @@ export default function Index() {
 
   return (
     <div className="p-4">
-      <div id="search" className="fixed z-30 top-0 left-0 w-full p-4 pb-0 bg-[#252D46]">
+      <div id="search" className="fixed z-30 top-0 left-0 w-full p-4 pb-0 bg-transparent backdrop-blur-md">
         <div
           id="header__search-bar"
-          className="flex w-full justify-around md:mb-6"
+          className="flex w-full justify-around mb-4 md:mb-6 lg:mt-20"
         >
           <div className="relative w-full md:w-1/2 lg:w-1/3">
             <div className="absolute top-1/2 left-2 -translate-y-1/2 transform">
@@ -67,7 +67,6 @@ export default function Index() {
             </Form>
           </div>
         </div>
-        <div className="absolute -bottom-8 left-0 z-0 h-8 w-full bg-gradient-to-b from-[#252D46] via-[rgba(37,45,70,0.7)] to-[rgba(37,45,70,0)] dark:from-[#222326] lg:-bottom-6" />
       </div>
       {movies.length && (
         <div className="pt-16 pb-14 m-auto md:pt-20 flex flex-col lg:flex-wrap lg:gap-4 lg:flex-row">

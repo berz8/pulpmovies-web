@@ -34,7 +34,7 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-background">
-        <div className="w-full min-h-full lg:px-40 lg:max-w-[1400px] m-auto">
+        <div className="w-full min-h-full lg:px-40 lg:max-w-[1400px] m-auto lg:pt-[5.2rem]">
           <Outlet />
           <ScrollRestoration />
           <Scripts />

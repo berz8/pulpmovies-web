@@ -26,12 +26,12 @@ export default function BottomNavigation() {
     }, [location])
 
   return (
-    <div className="fixed left-0 bottom-0 flex w-full lg:bottom-auto lg:left-4 lg:top-1/2 lg:w-auto lg:-translate-y-1/2 z-40">
+    <div className="fixed left-0 bottom-0 flex w-full lg:w-auto lg:top-2 lg:bottom-auto lg:left-1/2 lg:-translate-x-1/2 z-40">
       <motion.div
         className="shadow-up m-3 mb-[CALC(0.5rem_+_env(safe-area-inset-bottom))] bg-[rgba(205,205,205,0.3)] py-2 px-2 backdrop-blur-lg rounded-xl
                  lg:rounded-lg relative w-full"
       >  
-        <div className="relative flex w-full justify-around gap-x-1 lg:flex-col lg:gap-y-4">
+        <div className="relative flex w-full justify-around gap-x-1 lg:gap-y-4">
           <motion.div
             layout
             className={`absolute h-full top-0 rounded-lg bg-gradient-to-br from-[#E200B1] to-[#6400E2] shadow-xl`}
@@ -42,10 +42,10 @@ export default function BottomNavigation() {
               key={menuItem.id}
               to={menuItem.path}
               prefetch="render"
-              className="block flex-1 py-1 px-3 text-gray-100 relative z-10"
+              className="block flex-1 py-1 px-3 text-gray-100 relative z-10 lg:px-16 lg:flex lg:gap-3 lg:items-center lg:justify-center"
             >
               <BottomNavigationIcons label={menuItem.label} />
-              <span className="mx-auto text-center text-[0.68rem] hidden md:block">
+              <span className="mx-auto text-center text-[0.68rem] hidden md:block lg:text-semibold lg:text-base">
                 {menuItem.label}
               </span>
             </NavLink>
