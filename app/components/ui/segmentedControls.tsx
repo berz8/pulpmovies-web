@@ -7,16 +7,17 @@ export function SegmentedControls ({ items, selected, setSelected }: Props) {
         <motion.div
           layout
           className={`absolute h-full top-0 bg-gray-500 rounded-lg transition-300`}
-          style={{ width: `${100/items.length}%`, left: `${(100/items.length)*selected}%` }}
+          style={{ width: `${100/items.length}%`, left: `${(100/items.length)*(selected.index)}%` }}
         />
-        { items.map(item => (
+        { items.map((item, index) => (
             <button
-              key={item.id}
+              key={item.value}
               type="button"
-              className="grow rounded-md p-1 text-gray-50 text-sm relative z-10"
-              onClick={() => setSelected(item.id)}
+              className="grow rounded-md p-1 text-gray-50 text-sm relative z-10 font-semibold shadow-lg"
+              onClick={() => setSelected({value: item.value, index: index})}
             >
               { item.label }
+              { item.detail && (<span className="text-gray-400 font-bold ml-2">{item.detail}</span>) }
             </button>
         ))}
       </div>
@@ -26,9 +27,13 @@ export function SegmentedControls ({ items, selected, setSelected }: Props) {
 
 interface Props {
   items: {
-    id: number,
     label: string
+    value: string
+    detail?: string
   }[]
-  selected: number,
+  selected: {
+    value: string
+    index: number
+  }
   setSelected: Function
 }
