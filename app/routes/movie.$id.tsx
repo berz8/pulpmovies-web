@@ -68,7 +68,7 @@ export default function MovieId() {
     .filter((director) => director.job === 'Director')
     .map((director, index: number, filteredDirectors: CrewPerson[]) => (
       <Link
-        to={`/cast/${director.id}`}
+        to={`/person/${director.id}`}
         key={director.id}
         className="font-bold italic text-center text-gray-300 relative"
       >
