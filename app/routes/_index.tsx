@@ -31,7 +31,7 @@ export default function Index() {
   const { results } = useLoaderData<typeof loader>();
 
   return (
-    <div className="h-full pt-4 pb-24 px-3">
+    <div className="h-full pt-4 px-3">
       <div className="flex justify-center items-center gap-2 mb-4">
         <Logo width="2.8rem" />
         <Naming width="12rem" />

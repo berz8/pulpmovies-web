@@ -74,7 +74,7 @@ export default function PersonId() {
   const sortByPopularity = <T extends Movie>(movies: T[]): T[] => movies.sort((a,b) => b.popularity - a.popularity)
 
   return (
-    <div className="pb-32">
+    <div>
       <div className="px-3 mt-4">
         <h1 className="text-gray-100 text-center text-3xl px-4 relative font-bold">
           {person.name}
