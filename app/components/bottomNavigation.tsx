@@ -42,6 +42,7 @@ export default function BottomNavigation() {
               key={menuItem.id}
               to={menuItem.path}
               prefetch="render"
+              rel="prefetch"
               className="block flex-1 py-1 px-3 text-gray-100 relative z-10 lg:px-16 lg:flex lg:gap-3 lg:items-center lg:justify-center"
             >
               <BottomNavigationIcons label={menuItem.label} />
