@@ -9,6 +9,8 @@ import { TmdbCredits } from "~/components/ui";
 
 export const meta: V2_MetaFunction = () => ([
   { title: "PulpMovies" },
+  { property: "og:title", content: "PulpMovies"},
+  { property: "og:description", content: "Discover everything about the movies you love and share them with your friends"},
   { property: "og:image", content: "https://pulpmovies.app/images/pulpmovies-og.jpg"},
   { property: "og:site_name", content: "PulpMovies" },
 ]);
