@@ -10,7 +10,6 @@ import {
 } from "@remix-run/react";
 import stylesheet from "~/tailwind.css";
 import BottomNavigation from "./components/bottomNavigation";
-import { Credits } from "./components/ui/credits";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -41,7 +40,6 @@ export default function App() {
           <Scripts />
           <LiveReload />
           <BottomNavigation />
-          <Credits />
         </div>
       </body>
     </html>
