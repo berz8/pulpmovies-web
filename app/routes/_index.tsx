@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { HeadersFunction, LoaderArgs, json } from "@remix-run/node";
 import { Logo, Naming } from "../components/branding"
 import { useLoaderData } from "@remix-run/react";
 
@@ -6,6 +6,7 @@ import type { V2_MetaFunction } from "@remix-run/node";
 import type { Movie } from "../interfaces";
 import MovieCard from "../components/movie/movieCard";
 import { TmdbCredits } from "~/components/ui";
+import { authenticator } from "~/services/auth.server";
 import { Credits } from "~/components/ui/credits";
 
 export const meta: V2_MetaFunction = () => ([
@@ -16,7 +17,17 @@ export const meta: V2_MetaFunction = () => ([
   { property: "og:site_name", content: "PulpMovies" },
 ]);
 
-export async function loader() {
+export const headers: HeadersFunction = () => ({
+  "Cache-Control": "private, max-age=500",
+});
+
+export async function loader({ request }: LoaderArgs) {
+  let user = await authenticator.isAuthenticated(request);
+  if (user) {
+    console.log(user);
+  } else {
+    console.log("index not autenticated");
+  }
   const res = await fetch(`${process.env.TMDB_API_URL}/trending/movie/week?language=en`, {
     headers: {
       'Content-Type': 'application/json',
@@ -24,14 +35,15 @@ export async function loader() {
     },
   });
 
-  const result: { results: Movie[] } = await res.json();
+  const movies: { results: Movie[] } = await res.json();
 
-  return json(result);
+  return json({movies: movies.results, user});
 }
 
 export default function Index() {
 
-  const { results } = useLoaderData<typeof loader>();
+  const { movies, user } = useLoaderData<typeof loader>();
+  console.log(user);
 
   return (
     <div className="h-full pt-4 px-3">
@@ -39,11 +51,11 @@ export default function Index() {
         <Logo width="2.8rem" />
         <Naming width="12rem" />
       </div>
-      {results.length && (
+      {movies.length && (
         <>
           <h1 className="mb-3 text-lg text-gray-400 text-center font-bold">Now Trending</h1>
           <div className="flex flex-wrap gap-3 -mr-3">
-            {results.map(movie => (
+            {movies.map(movie => (
               <MovieCard key={movie.id} movie={movie} />
             ))}
           </div>

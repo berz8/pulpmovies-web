@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { HeadersFunction, json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { format, intervalToDuration } from "date-fns";
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
@@ -12,6 +12,10 @@ import { motion } from "framer-motion";
 import { MoviePerson } from "~/components/movie/moviePerson";
 import { CrewPerson, Video, creditsTypes } from "~/interfaces/movieDetail";
 import { IconShare, IconVideo } from "~/components/icons";
+
+export const headers: HeadersFunction = () => ({
+  "Cache-Control": "private, max-age=150",
+});
 
 export async function loader({ params }: LoaderArgs) {
   const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=credits,videos,watch/providers`, {

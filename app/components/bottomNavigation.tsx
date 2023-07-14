@@ -7,7 +7,7 @@ const menuItems: MenuItem[] = [
   {id: 0, label: "Home", path: "/", matchingPaths: ["/"]},
 //  {label: "Watchlist", path: "/lists"},
   {id: 1, label: "Search", path: "/search", matchingPaths: ["/search","/movie", "/person"]},
-//  {label: "Profile", path: "/user"}
+  {id: 2, label: "Profile", path: "/profile", matchingPaths: ["/profile"]},
 ]
 
 export default function BottomNavigation() {
