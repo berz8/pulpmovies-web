@@ -23,11 +23,6 @@ export const headers: HeadersFunction = () => ({
 
 export async function loader({ request }: LoaderArgs) {
   let user = await authenticator.isAuthenticated(request);
-  if (user) {
-    console.log(user);
-  } else {
-    console.log("index not autenticated");
-  }
   const res = await fetch(`${process.env.TMDB_API_URL}/trending/movie/week?language=en`, {
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +38,6 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
 
   const { movies, user } = useLoaderData<typeof loader>();
-  console.log(user);
 
   return (
     <div className="h-full pt-4 px-3">

@@ -4,6 +4,7 @@ import { IconShare } from "./share";
 import { IconVideo } from "./video";
 import { IconCheck } from "./check";
 import { IconClose } from "./close";
+import { IconSettings } from "./settings";
 
 export {
   IconSearch,
@@ -11,5 +12,6 @@ export {
   IconShare,
   IconVideo,
   IconCheck,
-  IconClose
+  IconClose,
+  IconSettings,
 }
