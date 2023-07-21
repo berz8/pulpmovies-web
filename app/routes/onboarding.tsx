@@ -1,7 +1,7 @@
 import { ActionArgs, LoaderArgs, json, redirect } from "@remix-run/node";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { debounce } from "lodash";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "~/components/ui";
 import { authenticator } from "~/services/auth.server";
 import type { ApiResponse } from "~/interfaces";
@@ -47,14 +47,26 @@ export async function action({ request }: ActionArgs) {
 
 export default function Onboarding() {
   const { user, usernameExist, selectedUsername } = useLoaderData<typeof loader>();
+
+  const [ value, setValue ] = useState("");
   
   const submit = useSubmit();
 
-  const debounceChange = useCallback(debounce((e) => handleChange(e), 350), [])
+  const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
+      let username = (event.target as HTMLInputElement).value;
+      username = username.replace(/[^0-9A-Za-z_\.]/g, '')
+      setValue(username);
 
-  const handleChange = (event: React.FormEvent<HTMLFormElement>) => {
+      debounceChange(event);
+  }
+
+  const debounceChange = useCallback(debounce((e) => submitChange(e), 350), [])
+
+  const submitChange = (event: React.FormEvent<HTMLFormElement>) => {
+      let username = (event.target as HTMLInputElement).value;
+      username = username.replace(/[^0-9A-Za-z_\.]/g, '')
       const searchParams = new URLSearchParams(location.search);
-      searchParams.set("username", (event.target as HTMLInputElement ).value)
+      searchParams.set("username", username)
       submit(searchParams, { replace: true });
   }
 
@@ -70,7 +82,7 @@ export default function Onboarding() {
       <h1 className="text-center text-2xl font-bold text-gray-200 mb-2">We're almost there</h1>
       <h2 className="text-center text-lg font-bold text-gray-300 mb-4">Choose your username</h2>
       <div className="w-36 h-36 overflow-hidden rounded-full mx-auto mt-12">
-          <img src="/images/fallback-profile.jpg" className="object-cover w-full h-full" />
+          <img src="/images/fallback-profile.jpg" alt="default profile" className="object-cover w-full h-full" />
       </div>
       <Form action="/onboarding" method="post" className="w-4/5 mx-auto md:w-1/2 lg:w-96 mt-6">
         <div className="relative mb-20">
@@ -79,8 +91,9 @@ export default function Onboarding() {
             name="username"
             className="w-full rounded-md pl-7 pr-4 py-2 bg-gray-100"
             placeholder="tylerdurden"
-            onChange={debounceChange}
+            onChange={handleChange}
             defaultValue={selectedUsername}
+            value={value}
           />
           { (!!usernameExist && selectedUsername.length > 3) && (
             <motion.div 
