@@ -10,6 +10,7 @@ import { IconSettings } from "~/components/icons";
 export async function loader({ request }: LoaderArgs) {
   let user = await authenticator.isAuthenticated(request);
   if (!user) return redirect("/login");
+  if (!user.user.Onboarding) return redirect("/onboarding");
   const res = await fetch(`${process.env.API_URL}/user`, {
     headers: {
       'Content-Type': 'application/json',
