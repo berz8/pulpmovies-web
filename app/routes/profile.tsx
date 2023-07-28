@@ -9,7 +9,7 @@ import { IconSettings } from "~/components/icons";
 
 export async function loader({ request }: LoaderArgs) {
   let user = await authenticator.isAuthenticated(request);
-  if (!user) return redirect("/login");
+  if (!user) return await authenticator.logout(request, { redirectTo: "/login" });
   if (!user.user.Onboarding) return redirect("/onboarding");
   const res = await fetch(`${process.env.API_URL}/user`, {
     headers: {
@@ -17,6 +17,7 @@ export async function loader({ request }: LoaderArgs) {
       'Authorization': `Bearer ${user.token.access_token}`,
     },
   })
+  if(res.status === 401) return await authenticator.logout(request, { redirectTo: "/login" })
   const resJson: ApiResponse<User> = await res.json();
   return json({ user: resJson.result });
 }
