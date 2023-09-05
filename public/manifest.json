@@ -6,7 +6,8 @@
     "display": "standalone",
     "orientation": "portrait",
     "scope": "/",
-    "start_url": "/",
+    "id": "/?source=pwa",
+    "start_url": "/?source=pwa",
     "icons": [
       {
         "src": "images/512.png",
