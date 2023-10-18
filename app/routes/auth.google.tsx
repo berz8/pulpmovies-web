@@ -1,4 +1,4 @@
-import { ActionArgs } from '@remix-run/node'
+import type { ActionArgs } from '@remix-run/node'
 import { authenticator } from '../services/auth.server'
 import { redirect } from '@remix-run/node'
 

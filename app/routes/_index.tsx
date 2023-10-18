@@ -45,7 +45,7 @@ export default function Index() {
         <Logo width="2.8rem" />
         <Naming width="12rem" />
       </div>
-      {movies.length && (
+      {movies.length ? (
         <>
           <h1 className="mb-3 text-lg text-gray-400 text-center font-bold">Now Trending</h1>
           <div className="flex flex-wrap gap-3 -mr-3">
@@ -54,7 +54,7 @@ export default function Index() {
             ))}
           </div>
         </>
-      )}
+      ) : null }
       <TmdbCredits />
       <Credits />
     </div>

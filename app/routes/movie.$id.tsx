@@ -108,7 +108,7 @@ export default function MovieId() {
   }
   
   return (
-    <div>
+    <div className="pb-28">
       {movie && (
         <div className="pt-3 pb-4">
           {movie.backdrop_path ? (
