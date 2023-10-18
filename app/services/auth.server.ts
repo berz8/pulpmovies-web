@@ -10,7 +10,7 @@ let googleStrategy = new GoogleStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID ?? "",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-    callbackURL: "/auth/google/callback",
+    callbackURL: "https://pulpmovies.app/auth/google/callback",
   },
   async ({extraParams, profile}) => {
     const apiLogin = await fetch(`${process.env.API_URL}/auth/login-google`, {
