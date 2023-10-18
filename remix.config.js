@@ -3,7 +3,7 @@ module.exports = {
   ignoredRouteFiles: ["**/.*"],
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
-  // serverBuildPath: "build/index.js",
+  serverBuildPath: "build/index.js",
   // publicPath: "/build/",
   serverModuleFormat: "cjs",
   future: {
@@ -13,4 +13,5 @@ module.exports = {
     v2_routeConvention: true,
   },
   tailwind: true,
+  postcss: true,
 };

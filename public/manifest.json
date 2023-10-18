@@ -1,0 +1,24 @@
+{
+    "name": "PulpMovies",
+    "short_name": "PulpMovies",
+    "background_color": "#ffffff",
+    "theme_color": "#6400E2",
+    "display": "standalone",
+    "orientation": "portrait",
+    "scope": "https://pulpmovies.app/",
+    "id": "https://pulpmovies.app/?source=pwa",
+    "start_url": "https://pulpmovies.app/?source=pwa",
+    "icons": [
+      {
+        "src": "images/512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "splash_pages": [
+      {
+        "src": "splash/13-pro.png",
+        "type": "image/png"
+      }
+    ]
+  }
