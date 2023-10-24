@@ -1,15 +1,14 @@
-import { ActionArgs, LoaderArgs, json, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { debounce } from "lodash";
 import { useCallback, useState } from "react";
 import { Button } from "~/components/ui";
 import { authenticator } from "~/services/auth.server";
 import type { ApiResponse } from "~/interfaces";
-import { usernameCheck } from "~/interfaces/api/user/usernameCheck";
 import { motion } from "framer-motion";
 import { IconCheck, IconClose } from "~/components/icons";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
   if(!user || user.user.Onboarding) return redirect("/");
 
@@ -28,7 +27,7 @@ export async function loader({ request }: LoaderArgs) {
   return json({ user: user.user, usernameExist, selectedUsername: username });
 }
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
   if(!user || user.user.Onboarding) return redirect("/");
 

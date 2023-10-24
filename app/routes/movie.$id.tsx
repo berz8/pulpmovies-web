@@ -39,6 +39,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => ([
   { property: "description", content: data?.movie.overview },
   { property: "og:description", content: data?.movie.overview },
   { property: "og:image", content: `https://image.tmdb.org/t/p/original${data?.movie.backdrop_path}`},
+  { property: "og:image:width", content: "1200"},
+  { property: "og:image:height", content: "675"},
   { property: "og:site_name", content: "PulpMovies" },
 ]);
 
@@ -46,7 +48,14 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => ([
 export default function MovieId() {
 
   const { movie } = useLoaderData<typeof loader>();
-  movie.credits.crew.sort((a,b) => ( a.department === 'Writing' ? -1 : 1 ))
+  movie.credits.crew.sort((a,b) => {
+    const depOrder: {[key: string]: number} = { Writing: 1, Camera: 2, Directing: 3 }
+
+    const depA = depOrder[a.department] || 2;
+    const depB = depOrder[b.department] || 2;
+
+    return depA - depB
+  })
   const details: {label: string, value: creditsTypes }[] = [
     {label: "Cast", value: creditsTypes.cast },
     {label: "Crew", value: creditsTypes.crew }

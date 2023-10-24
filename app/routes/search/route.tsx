@@ -97,7 +97,7 @@ export default function Index() {
               <input
                 type="text"
                 name="query"
-                placeholder="cerca"
+                placeholder="Search"
                 defaultValue={query}
                 className="
                   shadow-up

@@ -1,15 +1,15 @@
-import {LoaderArgs, V2_MetaFunction, json, redirect } from "@remix-run/node";
+import {LoaderFunctionArgs, MetaFunction, json, redirect } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { authenticator } from "~/services/auth.server";
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
   if (user) return redirect("/"); 
 
   return json({ok: true});
 }
 
-export const meta: V2_MetaFunction = () => ([
+export const meta: MetaFunction = () => ([
   { title: "Login - PulpMovies" },
   { property: "og:title", content: "Login - PulpMovies" },
   { property: "og:site_name", content: "PulpMovies" },
