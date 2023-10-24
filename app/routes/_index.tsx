@@ -1,27 +1,29 @@
-import { HeadersFunction, LoaderArgs, json } from "@remix-run/node";
+import { HeadersFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Logo, Naming } from "../components/branding"
 import { useLoaderData } from "@remix-run/react";
 
-import type { V2_MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import type { Movie } from "../interfaces";
 import MovieCard from "../components/movie/movieCard";
 import { TmdbCredits } from "~/components/ui";
 import { authenticator } from "~/services/auth.server";
 import { Credits } from "~/components/ui/credits";
 
-export const meta: V2_MetaFunction = () => ([
+export const meta: MetaFunction = () => ([
   { title: "PulpMovies" },
   { property: "og:title", content: "PulpMovies"},
   { property: "og:description", content: "Discover everything about the movies you love and share them with your friends"},
   { property: "og:image", content: "https://pulpmovies.app/images/pulpmovies-og.jpg"},
+  { property: "og:image:width", content: "1200"},
+  { property: "og:image:height", content: "675"},
   { property: "og:site_name", content: "PulpMovies" },
-]);
+])
 
 export const headers: HeadersFunction = () => ({
   "Cache-Control": "private, max-age=500",
 });
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
   const res = await fetch(`${process.env.TMDB_API_URL}/trending/movie/week?language=en`, {
     headers: {

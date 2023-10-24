@@ -12,6 +12,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => ([
   { property: "og:title", content: `@${data?.user.username} - PulpMovies`},
   { property: "og:description", content: "Discover everything about the movies you love and share them with your friends"},
   { property: "og:image", content: "https://pulpmovies.app/images/pulpmovies-og.jpg"},
+  { property: "og:image:width", content: "1200"},
+  { property: "og:image:height", content: "675"},
   { property: "og:site_name", content: "PulpMovies" },
 ])
 
