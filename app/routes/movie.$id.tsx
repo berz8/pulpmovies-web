@@ -1,7 +1,7 @@
 import { HeadersFunction, json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { format, intervalToDuration } from "date-fns";
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { MovieDetail } from "~/interfaces";
 import { useCallback, useMemo, useState } from "react";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
@@ -17,7 +17,7 @@ export const headers: HeadersFunction = () => ({
   "Cache-Control": "private, max-age=150",
 });
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=credits,videos,watch/providers`, {
     headers: {
       'Content-Type': 'application/json',
@@ -31,14 +31,14 @@ export async function loader({ params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
   return json({ movie });
-};
+}
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data }) => ([
-  { title: `${data.movie?.title} (${data.movie.release_date && format(new Date(data.movie?.release_date), "yyyy")})` },
-  { property: "og:title", content: `${data.movie?.title} (${data.movie.release_date && format(new Date(data.movie?.release_date), "yyyy")})` },
-  { property: "description", content: data.movie.overview },
-  { property: "og:description", content: data.movie.overview },
-  { property: "og:image", content: `https://image.tmdb.org/t/p/original${data.movie.backdrop_path}`},
+export const meta: MetaFunction<typeof loader> = ({ data }) => ([
+  { title: `${data?.movie?.title} (${data?.movie.release_date && format(new Date(data?.movie?.release_date), "yyyy")})` },
+  { property: "og:title", content: `${data?.movie?.title} (${data?.movie.release_date && format(new Date(data.movie?.release_date), "yyyy")})` },
+  { property: "description", content: data?.movie.overview },
+  { property: "og:description", content: data?.movie.overview },
+  { property: "og:image", content: `https://image.tmdb.org/t/p/original${data?.movie.backdrop_path}`},
   { property: "og:site_name", content: "PulpMovies" },
 ]);
 
@@ -46,6 +46,7 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => ([
 export default function MovieId() {
 
   const { movie } = useLoaderData<typeof loader>();
+  movie.credits.crew.sort((a,b) => ( a.department === 'Writing' ? -1 : 1 ))
   const details: {label: string, value: creditsTypes }[] = [
     {label: "Cast", value: creditsTypes.cast },
     {label: "Crew", value: creditsTypes.crew }
