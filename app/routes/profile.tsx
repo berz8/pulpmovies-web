@@ -1,13 +1,21 @@
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/ui";
 import { authenticator } from "~/services/auth.server";
 
 import type { ApiResponse, User } from "~/interfaces";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { IconSettings } from "~/components/icons";
 
-export async function loader({ request }: LoaderArgs) {
+export const meta: MetaFunction<typeof loader> = ({ data }) => ([
+  { title: `@${data?.user.username} - PulpMovies` },
+  { property: "og:title", content: `@${data?.user.username} - PulpMovies`},
+  { property: "og:description", content: "Discover everything about the movies you love and share them with your friends"},
+  { property: "og:image", content: "https://pulpmovies.app/images/pulpmovies-og.jpg"},
+  { property: "og:site_name", content: "PulpMovies" },
+])
+
+export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
   if (!user || !user.user) return await authenticator.logout(request, { redirectTo: "/login" });
   if (!user.user.Onboarding) return redirect("/onboarding");
