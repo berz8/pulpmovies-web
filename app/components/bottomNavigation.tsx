@@ -27,6 +27,8 @@ export default function BottomNavigation() {
   return (
     <div className="fixed left-0 bottom-0 flex w-full lg:w-auto lg:top-2 lg:bottom-auto lg:left-1/2 lg:-translate-x-1/2 z-40">
       <motion.div
+      layout
+      layoutRoot
         className="shadow-up m-3 mb-[CALC(0.5rem_+_env(safe-area-inset-bottom))] bg-[rgba(205,205,205,0.3)] py-2 px-2 backdrop-blur-lg rounded-xl
                  lg:rounded-lg relative w-full"
       >

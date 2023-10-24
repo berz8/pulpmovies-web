@@ -1,8 +1,8 @@
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { debounce } from "lodash";
 import { json } from "@remix-run/node";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { Movie, PersonSearch } from "~/interfaces";
 import { IconSearch } from "~/components/icons";
 import { MovieSearchCard } from "~/components/movie/movieSearchCard";
@@ -19,7 +19,15 @@ const parseSection = (section: string | null) => {
     return searchResultsType.movie
 }
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const meta: MetaFunction = () => ([
+  { title: "Search - PulpMovies" },
+  { property: "og:title", content: "Search - PulpMovies"},
+  { property: "og:description", content: "Discover everything about the movies you love and share them with your friends"},
+  { property: "og:image", content: "https://pulpmovies.app/images/pulpmovies-og.jpg"},
+  { property: "og:site_name", content: "PulpMovies" },
+]);
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const query = url.searchParams.get("query") ?? "";
   const section  = parseSection(url.searchParams.get("section"))
@@ -89,7 +97,7 @@ export default function Index() {
               <input
                 type="text"
                 name="query"
-                placeholder="cerca"
+                placeholder="Search"
                 defaultValue={query}
                 className="
                   shadow-up
