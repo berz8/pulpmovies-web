@@ -10,7 +10,7 @@ import { IconCheck, IconClose } from "~/components/icons";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
-  if(!user || user.user.Onboarding) return redirect("/");
+  if(!user || user.user.onboarding) return redirect("/");
 
   const url = new URL(request.url);
   const username = url.searchParams.get("username") ?? "";
@@ -29,7 +29,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
-  if(!user || user.user.Onboarding) return redirect("/");
+  if(!user || user.user.onboarding) return redirect("/");
 
   const body = await request.formData();
   const res = await fetch(`${process.env.API_URL}/user/username/${user.user.username}/onboard`, {

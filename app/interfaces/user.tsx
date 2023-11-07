@@ -7,15 +7,12 @@ export interface User {
   profilePath: any
   accountStatus: string
   fullName: string
-  Onboarding: boolean
-  CreatedAt: string
-  UpdatedAt: string
+  onboarding:number 
 }
 
 export interface AuthenticatedUser {
   token: {
    access_token: string
-    refresh_token: string 
   }
   user: User
 }
