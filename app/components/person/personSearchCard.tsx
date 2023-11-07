@@ -6,9 +6,11 @@ export default function PersonSearchCard({person}: Props) {
   const posterPath = !person.profile_path ? "/images/fallback-profile.jpg" : `https://image.tmdb.org/t/p/w200${person.profile_path}`
 
   return (
-   <Link
-    to={`/person/${person.id}`}
-    className="mb-2 flex shadow-lg bg-cover bg-center rounded-lg overflow-hidden backdrop-blur-0 p-2 relative lg:basis-[CALC(50%_-_2rem)] lg:mb-0 bg-[rgba(0,0,0,0.3)]" >
+    <Link
+      to={`/person/${person.id}`}
+      className="mb-2 flex shadow-lg bg-cover bg-center rounded-lg overflow-hidden backdrop-blur-0 p-2 relative lg:basis-[CALC(50%_-_2rem)] lg:mb-0 bg-[rgba(0,0,0,0.3)]"
+      unstable_viewTransition
+    >
       <div className="w-[60px] relative z-20 min-h-[80px]">
         <img
           src={posterPath}

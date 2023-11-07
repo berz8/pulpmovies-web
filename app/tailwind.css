@@ -12,3 +12,8 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+
+
+.movie-poster-transition {
+  view-transition-name: movie-poster;
+}

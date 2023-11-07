@@ -152,7 +152,7 @@ export default function MovieId() {
         {getDirectors(movie.credits.crew)}
       </div>
       <div className="flex px-3 pt-4">
-        <div className="w-[100px] lg:w-[250px]">
+        <div className="w-[100px] lg:w-[250px]" style={{ viewTransitionName: `movie-${movie.id}` }}>
           <MoviePosterAnimated posterPath={movie.poster_path} title={movie.title} />
         </div>
         <div

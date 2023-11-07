@@ -45,6 +45,7 @@ export default function BottomNavigation() {
               prefetch="render"
               rel="prefetch"
               className="block flex-1 py-1 px-3 text-gray-100 relative z-10 lg:px-16 lg:flex lg:gap-3 lg:items-center lg:justify-center"
+              unstable_viewTransition
             >
               <BottomNavigationIcons label={menuItem.label} />
               <span className="mx-auto text-center text-[0.68rem] hidden md:block lg:text-semibold lg:text-base">
