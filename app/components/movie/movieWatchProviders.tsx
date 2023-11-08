@@ -6,7 +6,7 @@ export default function MovieWatchProviders({ watchProviders }: Props) {
 
   return (
     <div>
-      {(watchProviders.IT.flatrate && watchProviders.IT.ads) ? (
+      {(watchProviders.IT.flatrate || watchProviders.IT.ads) ? (
         <>
           <span className="block text-sm text-gray-400 mb-1">Streaming</span>
           <div className="flex gap-2 flex-wrap">
