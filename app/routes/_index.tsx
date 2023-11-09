@@ -47,9 +47,16 @@ export default function Index() {
         <Logo width="2.8rem" />
         <Naming width="12rem" />
       </div>
+      {user ? (
+        <div className="mb-8 mt-2">
+          <h2 className="text-2xl text-gray-400 text-center font-bold">
+            Welcome back <span className="text-gray-100">@{user.user.username}</span>
+          </h2>
+        </div>
+      ) : null}
       {movies.length ? (
         <>
-          <h1 className="mb-3 text-lg text-gray-400 text-center font-bold">Now Trending</h1>
+          <h1 className="mb-3 text-lg text-gray-400 text-center font-bold">Trending Movies</h1>
           <div className="flex flex-wrap gap-3 -mr-3">
             {movies.map(movie => (
               <MovieCard key={movie.id} movie={movie} />
