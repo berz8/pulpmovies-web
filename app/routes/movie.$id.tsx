@@ -124,7 +124,7 @@ export default function MovieId() {
           {movie.backdrop_path ? (
             <div className="w-[CALC(100% - 1.5rem)] mx-3 h-[240px] relative rounded-xl overflow-hidden lg:h-[450px]">
               <img
-                src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
                 className="object-cover w-full h-full"
                 alt=""
               />

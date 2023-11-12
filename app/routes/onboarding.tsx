@@ -32,11 +32,11 @@ export async function action({ request }: ActionFunctionArgs) {
   if(!user || user.user.onboarding) return redirect("/");
 
   const body = await request.formData();
-  const res = await fetch(`${process.env.API_URL}/user/username/${user.user.username}/onboard`, {
+  const res = await fetch(`${process.env.API_URL}/user/onboarding`, {
     method: "POST",
     headers: { 
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${user.token.access_token}`,
+      'Authorization': `Bearer ${user.token}`,
     },
     body: JSON.stringify({ username: body.get("username")}),
   })
@@ -45,7 +45,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Onboarding() {
-  const { user, usernameExist, selectedUsername } = useLoaderData<typeof loader>();
+  const { usernameExist, selectedUsername } = useLoaderData<typeof loader>();
 
   const [ value, setValue ] = useState("");
   

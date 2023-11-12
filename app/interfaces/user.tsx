@@ -11,8 +11,6 @@ export interface User {
 }
 
 export interface AuthenticatedUser {
-  token: {
-   access_token: string
-  }
+  token: string
   user: User
 }

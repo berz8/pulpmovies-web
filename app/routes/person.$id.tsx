@@ -1,4 +1,4 @@
-import { LoaderArgs, V2_MetaFunction, json } from "@remix-run/node";
+import { LoaderFunctionArgs, MetaFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import MovieCard from "~/components/movie/movieCard";
@@ -7,7 +7,7 @@ import { SegmentedControls, TmdbCredits } from "~/components/ui";
 import type { Movie } from "~/interfaces";
 import type { PersonDetail } from "~/interfaces/personDetail";
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   const res = await fetch(`${process.env.TMDB_API_URL}/person/${params.id}?language=en&append_to_response=movie_credits`, {
     headers: {
       'Content-Type': 'application/json',
@@ -21,9 +21,9 @@ export async function loader({ params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
   return json({ person });
-};
+}
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data }) => ([
+export const meta: MetaFunction<typeof loader> = ({ data }) => ([
   { title: data.person?.name },
   { property: "og:title", content: data.person?.name }, 
   { property: "og:image", content: `https://image.tmdb.org/t/p/original${data.person.profile_path}`},

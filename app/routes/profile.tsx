@@ -20,15 +20,15 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => ([
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
   if (!user || !user.user) return await authenticator.logout(request, { redirectTo: "/login" });
-  if (!user.user.onboarding) return redirect("/onboarding");
   const res = await fetch(`${process.env.API_URL}/user/id/${user.user.id}`, {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${user.token.access_token}`,
+      'Authorization': `Bearer ${user.token}`,
     },
   })
   if(res.status === 401) return await authenticator.logout(request, { redirectTo: "/login" })
   const resJson: User = await res.json();
+  if (!resJson.onboarding) return redirect("/onboarding");
   return json({ user: resJson });
 }
 

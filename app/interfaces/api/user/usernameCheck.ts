@@ -1,3 +1,3 @@
-export interface usernameCheck {
+export interface UsernameCheck {
   usernameExist: boolean
 }
