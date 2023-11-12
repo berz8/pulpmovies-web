@@ -25,6 +25,7 @@ export const headers: HeadersFunction = () => ({
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
+  console.log(user);
   const res = await fetch(`${process.env.TMDB_API_URL}/trending/movie/week?language=en`, {
     headers: {
       'Content-Type': 'application/json',
