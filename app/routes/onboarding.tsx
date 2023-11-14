@@ -7,6 +7,7 @@ import { authenticator } from "~/services/auth.server";
 import type { ApiResponse } from "~/interfaces";
 import { motion } from "framer-motion";
 import { IconCheck, IconClose } from "~/components/icons";
+import { commitSession, getSession } from "~/services/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
@@ -41,7 +42,20 @@ export async function action({ request }: ActionFunctionArgs) {
     body: JSON.stringify({ username: body.get("username")}),
   })
   if(res.status === 401) return redirect('/login');
-  return redirect('/profile');
+  if(res.status !== 200) return redirect('/onboarding?error=1')
+
+  let session = await getSession(request.headers.get('_session'));
+  session.set(authenticator.sessionKey, { 
+    ...user,
+    user: {
+      ...user.user,
+      onboarding: 1,
+      username: body.get('username'),
+    },
+  })
+  return redirect('/profile', {
+    headers: { "Set-Cookie": await commitSession(session) },
+  });
 }
 
 export default function Onboarding() {
