@@ -6,6 +6,8 @@ export function Button({
   size = "md",
   icon,
   onClick,
+  name = "",
+  value = "",
 }: Props) {
   return (
     <button
@@ -13,6 +15,8 @@ export function Button({
       className={classGenerator(variant, size)}
       disabled={disabled}
       onClick={() => onClick && onClick()}
+      name={name}
+      value={value}
     >
       {icon && icon}
       <span>{text}</span>
@@ -44,4 +48,6 @@ interface Props {
   disabled?: boolean;
   icon?: JSX.Element;
   onClick?: Function;
+  name?: string;
+  value?: string;
 }

@@ -1,5 +1,5 @@
-import { defer, redirect } from "@remix-run/node";
-import { Await, Form, Link, useLoaderData } from "@remix-run/react";
+import { defer, json, redirect } from "@remix-run/node";
+import { Await, Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { format, intervalToDuration } from "date-fns";
 import type {
   LoaderFunctionArgs,
@@ -29,6 +29,9 @@ export const headers: HeadersFunction = () => ({
 
 export async function action({ request, params }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
+  const formData = await request.formData();
+  const addToWatchlist = formData.get("addToWatchlist");
+
   if (!user) return null;
 
   const res = await fetch(
@@ -42,35 +45,57 @@ export async function action({ request, params }: LoaderFunctionArgs) {
   );
   const movie: Movie = await res.json();
 
-  const addMovieReq = await fetch(
-    `${process.env.API_URL}/watchlist/id/default/add`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
+  if (addToWatchlist === "true") {
+    const addMovieReq = await fetch(
+      `${process.env.API_URL}/watchlist/id/default/add`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ ...movie }),
       },
-      body: JSON.stringify({ ...movie }),
-    },
-  );
-  if (addMovieReq.status != 201 && addMovieReq.status != 200) {
-    return redirect(`/movie/${params.id}?error=true`);
-  }
+    );
+    if (addMovieReq.status != 201 && addMovieReq.status != 200) {
+      return redirect(`/movie/${params.id}?error=true`);
+    }
 
-  return redirect(`/movie/${params.id}?success=true`);
+    return null;
+  } else if (addToWatchlist === "false") {
+    const res = await fetch(
+      `${process.env.API_URL}/watchlist/id/default/${movie.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      },
+    );
+    if (res.status != 200) {
+      return redirect(`/movie/${params.id}?error=true`);
+    }
+
+    return null;
+  }
 }
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
-  let watchlistPromise = fetch(
-    `${process.env.API_URL}/watchlist/user/movie/${params.id}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.token}`,
+  let watchlists: Watchlist[] = [];
+  if (user) {
+    let watchlistPromise = await fetch(
+      `${process.env.API_URL}/watchlist/user/movie/${params.id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
       },
-    },
-  );
+    );
+    watchlists = await watchlistPromise.json();
+  }
 
   const res = await fetch(
     `${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=credits,videos,watch/providers`,
@@ -88,13 +113,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return defer({
+  return json({
     movie,
-    params,
-    watchlist: watchlistPromise.then(
-      (res) => res.json() as Promise<Watchlist[]>,
-    ),
-    user,
+    watchlists,
+    user: user?.user,
   });
 }
 
@@ -124,7 +146,12 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
 ];
 
 export default function MovieId() {
-  const { movie, watchlist, user } = useLoaderData<typeof loader>();
+  const { movie, watchlists, user } = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
+  const isInWatchlist = fetcher.formData
+    ? fetcher.formData.get("addToWatchlist") === "true"
+    : watchlists.length > 0;
+
   movie.credits.crew.sort((a, b) => {
     const depOrder: { [key: string]: number } = {
       Writing: 1,
@@ -278,39 +305,22 @@ export default function MovieId() {
         <MovieRating rating={movie.vote_average} />
       </div>
       {user && (
-        <Suspense
-          fallback={
+        <div className="px-3 mt-5 flex items-center w-full">
+          <fetcher.Form
+            method="post"
+            action={`/movie/${movie.id}`}
+            className="w-full"
+          >
             <Button
               type="submit"
-              text="Add to Watchlist"
+              value={!isInWatchlist ? "true" : "false"}
+              name="addToWatchlist"
+              text={isInWatchlist ? "In your Watchlist" : "Add to Watchlist"}
               variant="secondary"
-              icon={<IconWatchlist />}
+              icon={<IconWatchlist fill={isInWatchlist} />}
             />
-          }
-        >
-          <Await resolve={watchlist}>
-            {(watchlist) => (
-              <div className="px-3 mt-5 flex items-center w-full">
-                <Form
-                  method="post"
-                  action={`/movie/${movie.id}`}
-                  className="w-full"
-                >
-                  <Button
-                    type="submit"
-                    text={
-                      watchlist.length > 0
-                        ? "In your Watchlist"
-                        : "Add to Watchlist"
-                    }
-                    variant="secondary"
-                    icon={<IconWatchlist fill={watchlist.length > 0} />}
-                  />
-                </Form>
-              </div>
-            )}
-          </Await>
-        </Suspense>
+          </fetcher.Form>
+        </div>
       )}
       {Object.keys(movie["watch/providers"].results).length > 0 &&
         movie["watch/providers"].results.IT && (
