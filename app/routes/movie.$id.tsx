@@ -1,7 +1,7 @@
-import { HeadersFunction, defer, json, redirect } from "@remix-run/node";
+import { defer, redirect } from "@remix-run/node";
 import { Await, Form, Link, useLoaderData } from "@remix-run/react";
 import { format, intervalToDuration } from "date-fns";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction, HeadersFunction } from "@remix-run/node";
 import type { Movie, MovieDetail, Watchlist } from "~/interfaces";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
@@ -10,7 +10,7 @@ import MovieWatchProviders from "~/components/movie/movieWatchProviders";
 import { Button, SegmentedControls, TmdbCredits } from "~/components/ui";
 import { motion } from "framer-motion";
 import { MoviePerson } from "~/components/movie/moviePerson";
-import { CrewPerson, Video, creditsTypes } from "~/interfaces/movieDetail";
+import { type CrewPerson, type Video, creditsTypes } from "~/interfaces/movieDetail";
 import { IconShare, IconVideo } from "~/components/icons";
 import { IconWatchlist } from "~/components/icons/watchlist";
 import { authenticator } from "~/services/auth.server";
@@ -71,7 +71,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   return defer({ 
     movie,
     params,
-    watchlist: watchlistPromise.then(res => res.json()),
+    watchlist: watchlistPromise.then(res => res.json() as Promise<Watchlist[]>),
     user
   });
 }
@@ -141,7 +141,7 @@ export default function MovieId() {
           href={`https://youtube.com/watch?v=${trailer.key}`}
           rel="noreferrer"
           target="_blank"
-          className="grow p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md text-gray-200 flex gap-2 justify-center">
+          className="w-full p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md text-gray-200 flex gap-2 justify-center">
           <IconVideo />
           <span>Trailer</span>
         </a>
@@ -211,24 +211,15 @@ export default function MovieId() {
       </div>
       {user && (
         <Suspense fallback={
-                  <button
-                    type="submit"
-                    className="mt-5 px-3 w-full p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md text-gray-200 flex gap-2 justify-center cursor-pointer">
-                    <IconWatchlist />
-                    <span>{'Add to Watchlist'}</span>
-                  </button>
+                  <Button type="submit" text="Add to Watchlist"
+                    variant="secondary" icon={<IconWatchlist />} />
           }>
           <Await resolve={watchlist}>
             {watchlist => (
               <div className="px-3 mt-5 flex items-center w-full">
                 <Form method="post" action={`/movie/${movie.id}`} className="w-full">
-                  <button
-                    type="submit"
-                    disabled={watchlist.length > 0}
-                    className="w-full p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md text-gray-200 flex gap-2 justify-center cursor-pointer">
-                    <IconWatchlist fill={watchlist.length > 0} />
-                    <span>{watchlist.length > 0 ? 'In your watchlist' : 'Add to Watchlist'}</span>
-                  </button>
+                  <Button type="submit" text={watchlist.length > 0 ? 'In your Watchlist' : 'Add to Watchlist'}
+                    variant="secondary" icon={<IconWatchlist fill={watchlist.length > 0} />} />
                 </Form>
               </div>
             )}
@@ -252,12 +243,12 @@ export default function MovieId() {
       </div>
       <div className="px-3 mt-5 flex gap-2">
         {movie.videos.results && getTrailer(movie.videos.results)}
-        <div
+        <Button
+          variant="secondary"
           onClick={() => shareSheet()}
-          className="grow p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md text-gray-200 flex gap-2 justify-center cursor-pointer">
-          <IconShare />
-          <span>Share</span>
-        </div>
+          icon={<IconShare />}
+          text="Share"
+        />
       </div>
       <div className="px-3 mt-5 flex flex-col gap-2">
         <div className="py-2 border-b border-gray-600">
