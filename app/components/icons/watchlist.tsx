@@ -1,9 +1,9 @@
-export function IconWatchlist() {
+export function IconWatchlist({ fill = false }: { fill?: boolean }) {
   return (
     <svg
       width="26"
       height="26"
-      fill="none"
+      fill={fill ? "currentColor" : "none"}
       viewBox="0 0 24 24"
     >
       <path

@@ -49,7 +49,7 @@ export default function ListsPage() {
            Your lists 
           </h2>
           <div className="mt-3">
-            <Button variant="transparent" text="Create a new list" type="button" />
+            {/* <Button variant="transparent" text="Create a new list" type="button" /> */}
           </div>
           <div className="mt-4">
             {watchlists.map(w => (
@@ -65,10 +65,12 @@ export default function ListsPage() {
                 </div>
                 {watchlistWithMovies && watchlistWithMovies.movies.length > 0 ?
                   (<div className="flex gap-2 mt-2">
-                {watchlistWithMovies && watchlistWithMovies.movies.map(m => (
-                  <div key={m.id} className="rounded-lg overflow-hidden w-16">
-                    <img src={posterPath(m)} alt={m.title} loading="lazy" />
-                  </div>
+                {watchlistWithMovies && watchlistWithMovies.movies
+                  .slice(0, 6)
+                  .map(m => (
+                    <div key={m.id} className="rounded-lg overflow-hidden w-16">
+                      <img src={posterPath(m)} alt={m.title} loading="lazy" />
+                    </div>
                 )) }
                 </div>) : (
                  <div className="py-8 px-4 text-center">

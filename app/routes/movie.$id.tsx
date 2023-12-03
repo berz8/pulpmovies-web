@@ -1,23 +1,60 @@
-import { HeadersFunction, json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { HeadersFunction, defer, json, redirect } from "@remix-run/node";
+import { Await, Form, Link, useLoaderData } from "@remix-run/react";
 import { format, intervalToDuration } from "date-fns";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import type { MovieDetail } from "~/interfaces";
-import { useCallback, useMemo, useState } from "react";
+import type { Movie, MovieDetail, Watchlist } from "~/interfaces";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
 import MovieRating from "~/components/movie/movieRating";
 import MovieWatchProviders from "~/components/movie/movieWatchProviders";
-import { SegmentedControls, TmdbCredits } from "~/components/ui";
+import { Button, SegmentedControls, TmdbCredits } from "~/components/ui";
 import { motion } from "framer-motion";
 import { MoviePerson } from "~/components/movie/moviePerson";
 import { CrewPerson, Video, creditsTypes } from "~/interfaces/movieDetail";
 import { IconShare, IconVideo } from "~/components/icons";
+import { IconWatchlist } from "~/components/icons/watchlist";
+import { authenticator } from "~/services/auth.server";
 
 export const headers: HeadersFunction = () => ({
   "Cache-Control": "private, max-age=150",
 });
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function action({ request, params }: LoaderFunctionArgs) {
+  const user = await authenticator.isAuthenticated(request);
+  if (!user) return null;
+
+  const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization':`Bearer ${process.env.TMDB_API_KEY}`,
+    }
+  });
+  const movie: Movie  = await res.json();
+
+  const addMovieReq = await fetch(`${process.env.API_URL}/watchlist/id/default/add`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${user.token}`,
+    },
+    body: JSON.stringify({...movie})
+  });
+  if (addMovieReq.status != 201 && addMovieReq.status != 200) {
+    return redirect(`/movie/${params.id}?error=true`)
+  }
+
+  return redirect(`/movie/${params.id}?success=true`);
+}
+
+export async function loader({ params, request }: LoaderFunctionArgs) {
+  const user = await authenticator.isAuthenticated(request);
+  let watchlistPromise = fetch(`${process.env.API_URL}/watchlist/user/movie/${params.id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${user?.token}`,
+    },
+  });
+
   const res = await fetch(`${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=credits,videos,watch/providers`, {
     headers: {
       'Content-Type': 'application/json',
@@ -30,7 +67,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (!movie || !movie.id) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ movie });
+
+  return defer({ 
+    movie,
+    params,
+    watchlist: watchlistPromise.then(res => res.json()),
+    user
+  });
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => ([
@@ -47,7 +90,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => ([
 
 export default function MovieId() {
 
-  const { movie } = useLoaderData<typeof loader>();
+  const { movie, watchlist, user } = useLoaderData<typeof loader>();
   movie.credits.crew.sort((a,b) => {
     const depOrder: {[key: string]: number} = { Writing: 1, Camera: 2, Directing: 3 }
 
@@ -166,6 +209,32 @@ export default function MovieId() {
       <div className="px-3 mt-5 flex items-center">
         <MovieRating rating={movie.vote_average} />
       </div>
+      {user && (
+        <Suspense fallback={
+                  <button
+                    type="submit"
+                    className="mt-5 px-3 w-full p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md text-gray-200 flex gap-2 justify-center cursor-pointer">
+                    <IconWatchlist />
+                    <span>{'Add to Watchlist'}</span>
+                  </button>
+          }>
+          <Await resolve={watchlist}>
+            {watchlist => (
+              <div className="px-3 mt-5 flex items-center w-full">
+                <Form method="post" action={`/movie/${movie.id}`} className="w-full">
+                  <button
+                    type="submit"
+                    disabled={watchlist.length > 0}
+                    className="w-full p-2 rounded-lg bg-[rgba(0,0,0,0.3)] shadow-md text-gray-200 flex gap-2 justify-center cursor-pointer">
+                    <IconWatchlist fill={watchlist.length > 0} />
+                    <span>{watchlist.length > 0 ? 'In your watchlist' : 'Add to Watchlist'}</span>
+                  </button>
+                </Form>
+              </div>
+            )}
+          </Await>
+        </Suspense>
+      )}
       { (Object.keys(movie['watch/providers'].results).length > 0 && movie['watch/providers'].results.IT) && (
         <div className="mt-5 px-3">
           <MovieWatchProviders watchProviders={movie['watch/providers'].results} />

@@ -1,7 +1,8 @@
 export interface Movie {
+  id: number
+  imdbId: string
   adult: boolean
   backdrop_path: string
-  id: number
   title: string
   original_language: string
   original_title: string
