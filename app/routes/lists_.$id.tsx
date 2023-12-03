@@ -20,7 +20,7 @@ export default function ListIdPage() {
   const { watchlist, movies } = useLoaderData<typeof loader>()
 
   return (
-    <div className="pt-4 px-3">
+    <div className="pt-4 px-3 mb-20">
       <h1 className="text-gray-400 font-bold text-3xl">{watchlist.name}</h1>
       <h2 className="text-gray-500 italic mb-6 text-lg">{watchlist.description}</h2>
       {movies.length > 0 ? movies.map(m => <MovieSearchCard  key={m.id} movie={m} />) : (
