@@ -16,4 +16,4 @@ export type {
   AuthenticatedUser,
   UsernameCheck,
   Watchlist,
-}
+};

@@ -1,9 +1,10 @@
 import { Link } from "@remix-run/react";
 import { PersonSearch } from "../../interfaces";
 
-export default function PersonSearchCard({person}: Props) {
-  
-  const posterPath = !person.profile_path ? "/images/fallback-profile.jpg" : `https://image.tmdb.org/t/p/w200${person.profile_path}`
+export default function PersonSearchCard({ person }: Props) {
+  const posterPath = !person.profile_path
+    ? "/images/fallback-profile.jpg"
+    : `https://image.tmdb.org/t/p/w200${person.profile_path}`;
 
   return (
     <Link
@@ -20,20 +21,18 @@ export default function PersonSearchCard({person}: Props) {
         />
       </div>
       <div className="pl-3 w-[CALC(100%_-_60px)] relative z-20">
-        <h1 className="text-gray-200 text-xl font-bold">
-          {person.name}
-        </h1>
+        <h1 className="text-gray-200 text-xl font-bold">{person.name}</h1>
         <h2 className="text-gray-400 italic text-md font-semibold">
           Know for: {person.known_for_department}
         </h2>
         <span className="block text-gray-400 text-sm">
-          {person.known_for.map(x => x.title).join(", ")}
+          {person.known_for.map((x) => x.title).join(", ")}
         </span>
       </div>
-    </Link> 
-  )
+    </Link>
+  );
 }
 
 interface Props {
-  person: PersonSearch
+  person: PersonSearch;
 }

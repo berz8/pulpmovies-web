@@ -1,4 +1,9 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  json,
+  redirect,
+} from "@remix-run/node";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { debounce } from "lodash";
 import { useCallback, useState } from "react";
@@ -11,17 +16,20 @@ import { commitSession, getSession } from "~/services/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
-  if(!user || user.user.onboarding) return redirect("/");
+  if (!user || user.user.onboarding) return redirect("/");
 
   const url = new URL(request.url);
   const username = url.searchParams.get("username") ?? "";
-  let usernameExist = false; 
+  let usernameExist = false;
 
   if (username.length >= 4) {
-    const res = await fetch(`${process.env.API_URL}/user/username/${username}/check`, {
-      headers: { 'Content-Type': 'application/json'}
-    })
-    const resJson: ApiResponse<boolean> = await res.json(); 
+    const res = await fetch(
+      `${process.env.API_URL}/user/username/${username}/check`,
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+    const resJson: ApiResponse<boolean> = await res.json();
     usernameExist = resJson.result;
   }
 
@@ -30,30 +38,30 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
-  if(!user || user.user.onboarding) return redirect("/");
+  if (!user || user.user.onboarding) return redirect("/");
 
   const body = await request.formData();
   const res = await fetch(`${process.env.API_URL}/user/onboarding`, {
     method: "POST",
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${user.token}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user.token}`,
     },
-    body: JSON.stringify({ username: body.get("username")}),
-  })
-  if(res.status === 401) return redirect('/login');
-  if(res.status !== 200) return redirect('/onboarding?error=1')
+    body: JSON.stringify({ username: body.get("username") }),
+  });
+  if (res.status === 401) return redirect("/login");
+  if (res.status !== 200) return redirect("/onboarding?error=1");
 
-  let session = await getSession(request.headers.get('_session'));
-  session.set(authenticator.sessionKey, { 
+  let session = await getSession(request.headers.get("_session"));
+  session.set(authenticator.sessionKey, {
     ...user,
     user: {
       ...user.user,
       onboarding: 1,
-      username: body.get('username'),
+      username: body.get("username"),
     },
-  })
-  return redirect('/profile', {
+  });
+  return redirect("/profile", {
     headers: { "Set-Cookie": await commitSession(session) },
   });
 }
@@ -61,46 +69,60 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Onboarding() {
   const { usernameExist, selectedUsername } = useLoaderData<typeof loader>();
 
-  const [ value, setValue ] = useState("");
-  
+  const [value, setValue] = useState("");
+
   const submit = useSubmit();
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
-      let username = (event.target as HTMLInputElement).value;
-      username = username.replace(/[^0-9A-Za-z_\.]/g, '')
-      setValue(username);
+    let username = (event.target as HTMLInputElement).value;
+    username = username.replace(/[^0-9A-Za-z_\.]/g, "");
+    setValue(username);
 
-      debounceChange(event);
-  }
+    debounceChange(event);
+  };
 
-  const debounceChange = useCallback(debounce((e) => submitChange(e), 350), [])
+  const debounceChange = useCallback(
+    debounce((e) => submitChange(e), 350),
+    [],
+  );
 
   const submitChange = (event: React.FormEvent<HTMLFormElement>) => {
-      let username = (event.target as HTMLInputElement).value;
-      username = username.replace(/[^0-9A-Za-z_\.]/g, '')
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set("username", username)
-      submit(searchParams, { replace: true });
-  }
+    let username = (event.target as HTMLInputElement).value;
+    username = username.replace(/[^0-9A-Za-z_\.]/g, "");
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("username", username);
+    submit(searchParams, { replace: true });
+  };
 
   const isValid = () => {
-    if(usernameExist) return true;
-    if(selectedUsername.length < 4) return true;
+    if (usernameExist) return true;
+    if (selectedUsername.length < 4) return true;
     return false;
-  }
-
+  };
 
   return (
     <div className="px-3 mt-8">
-      <h1 className="text-center text-2xl font-bold text-gray-200 mb-2">We're almost there</h1>
-      <h2 className="text-center text-lg font-bold text-gray-300 mb-4">Choose your username</h2>
+      <h1 className="text-center text-2xl font-bold text-gray-200 mb-2">
+        We're almost there
+      </h1>
+      <h2 className="text-center text-lg font-bold text-gray-300 mb-4">
+        Choose your username
+      </h2>
       <div className="w-36 h-36 overflow-hidden rounded-full mx-auto mt-12">
-          <img src="/images/fallback-profile.jpg" alt="default profile" className="object-cover w-full h-full" />
+        <img
+          src="/images/fallback-profile.jpg"
+          alt="default profile"
+          className="object-cover w-full h-full"
+        />
       </div>
-      <Form action="/onboarding" method="post" className="w-4/5 mx-auto md:w-1/2 lg:w-96 mt-6">
+      <Form
+        action="/onboarding"
+        method="post"
+        className="w-4/5 mx-auto md:w-1/2 lg:w-96 mt-6"
+      >
         <div className="relative mb-20">
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="username"
             className="w-full rounded-md pl-7 pr-4 py-2 bg-gray-100"
             placeholder="tylerdurden"
@@ -108,9 +130,9 @@ export default function Onboarding() {
             defaultValue={selectedUsername}
             value={value}
           />
-          { (!!usernameExist && selectedUsername.length > 3) && (
-            <motion.div 
-              layoutId="status" 
+          {!!usernameExist && selectedUsername.length > 3 && (
+            <motion.div
+              layoutId="status"
               className="w-full p-2 text-white text-sm bg-red-600 absolute left-0 -bottom-12 rounded-md shadow-lg flex justify-start items-center gap-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -119,9 +141,9 @@ export default function Onboarding() {
               <span>Username not available</span>
             </motion.div>
           )}
-          { (!usernameExist && selectedUsername.length > 3) && (
-            <motion.div 
-              layoutId="status" 
+          {!usernameExist && selectedUsername.length > 3 && (
+            <motion.div
+              layoutId="status"
               className="w-full p-2 text-white text-sm bg-green-600 absolute left-0 -bottom-12 rounded-md shadow-lg flex justify-start items-center gap-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -130,11 +152,12 @@ export default function Onboarding() {
               <span>Username available</span>
             </motion.div>
           )}
-          <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">@</span>
+          <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500">
+            @
+          </span>
         </div>
         <Button type="submit" text="Confirm" disabled={isValid()} />
       </Form>
-
     </div>
-  )
+  );
 }

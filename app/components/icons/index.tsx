@@ -1,6 +1,6 @@
 import { IconSearch } from "./search";
 import { BottomNavigationIcons } from "./bottomNavigationIcons";
-import { IconShare } from "./share"; 
+import { IconShare } from "./share";
 import { IconVideo } from "./video";
 import { IconCheck } from "./check";
 import { IconClose } from "./close";
@@ -14,4 +14,4 @@ export {
   IconCheck,
   IconClose,
   IconSettings,
-}
+};

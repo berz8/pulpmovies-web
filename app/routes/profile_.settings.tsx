@@ -11,5 +11,5 @@ export default function Settings() {
         </Form>
       </div>
     </div>
-  )
+  );
 }

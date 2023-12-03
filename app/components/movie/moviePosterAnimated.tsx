@@ -1,33 +1,36 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 
-export default function MoviePosterAnimated({ posterPath, title }: Props){
-
-  const _posterPath = !posterPath ? {
-      normal: "/images/fallback-movie.jpg",
-      full: "/images/fallback-movie.jpg",
-    } : {
-      normal: `https://image.tmdb.org/t/p/w500${posterPath}`,
-      full: `https://image.tmdb.org/t/p/original${posterPath}`
-    }
+export default function MoviePosterAnimated({ posterPath, title }: Props) {
+  const _posterPath = !posterPath
+    ? {
+        normal: "/images/fallback-movie.jpg",
+        full: "/images/fallback-movie.jpg",
+      }
+    : {
+        normal: `https://image.tmdb.org/t/p/w500${posterPath}`,
+        full: `https://image.tmdb.org/t/p/original${posterPath}`,
+      };
 
   // const [fullscreen, setFullscreen] = useState<boolean>(false)
 
   useEffect(() => {
     // Preload fullsize image
-    const img = document.createElement('img');
-    img.src = _posterPath.full; 
-  })
+    const img = document.createElement("img");
+    img.src = _posterPath.full;
+  });
 
   return (
     <>
-      <motion.div
-        className="w-full"
-      >
-        <motion.img src={_posterPath.normal} alt={`${title}`} className="rounded-md" />
+      <motion.div className="w-full">
+        <motion.img
+          src={_posterPath.normal}
+          alt={`${title}`}
+          className="rounded-md"
+        />
       </motion.div>
 
-{/*      <AnimatePresence>
+      {/*      <AnimatePresence>
         {fullscreen &&
           <motion.div
             className="fixed w-full h-full p-10 top-0 left-0 flex flex-col gap-4 items-center justify-center z-[999] bg-[rgba(0,0,0,0.4)] backdrop-blur-sm"
@@ -57,10 +60,10 @@ export default function MoviePosterAnimated({ posterPath, title }: Props){
       </AnimatePresence>
       */}
     </>
-  )
+  );
 }
 
 interface Props {
-  posterPath: string | null
-  title: string
+  posterPath: string | null;
+  title: string;
 }

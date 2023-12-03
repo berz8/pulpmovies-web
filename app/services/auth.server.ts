@@ -11,7 +11,7 @@ let googleStrategy = new GoogleStrategy(
     clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     callbackURL: `${process.env.APP_URL}/auth/google/callback`,
   },
-  async ({extraParams, profile}) => {
+  async ({ extraParams, profile }) => {
     const apiLogin = await fetch(`${process.env.API_URL}/auth/google`, {
       method: "POST",
       headers: {
@@ -20,14 +20,14 @@ let googleStrategy = new GoogleStrategy(
       body: JSON.stringify({
         idToken: extraParams.id_token,
         fullName: profile.displayName,
-      })
-    })
-    const response: ApiResponse<User>  = await apiLogin.json();
-    return { 
+      }),
+    });
+    const response: ApiResponse<User> = await apiLogin.json();
+    return {
       token: response.token,
-      user: response.result
-    }
-  }
+      user: response.result,
+    };
+  },
 );
 
 authenticator.use(googleStrategy);
