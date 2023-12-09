@@ -4,6 +4,7 @@ import type { PersonSearch } from "./personSearch";
 import type { ApiResponse } from "./apiResponse";
 import type { User, AuthenticatedUser } from "./user";
 import type { UsernameCheck } from "./api/user/usernameCheck";
+import type { Watchlist } from "./api/watchlist/watchlist";
 
 export type {
   Movie,
@@ -13,5 +14,6 @@ export type {
   ApiResponse,
   User,
   AuthenticatedUser,
-  UsernameCheck
-}
+  UsernameCheck,
+  Watchlist,
+};

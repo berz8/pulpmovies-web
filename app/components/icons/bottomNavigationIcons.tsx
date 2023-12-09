@@ -132,7 +132,7 @@ export function BottomNavigationIcons({ label }: Props) {
           </svg>
         );
       default:
-        return(<div></div>) 
+        return <div></div>;
     }
   };
 

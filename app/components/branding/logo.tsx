@@ -1,5 +1,10 @@
 export const Logo = (props: any) => (
-  <svg width={props.width} viewBox="0 0 499 499" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    width={props.width}
+    viewBox="0 0 499 499"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       d="M74.6612 70.0934C109.49 36.4965 144.423 22.0523 170.986 16.0564C197.123 10.1567 217.178 32.3112 217.178 58.9013V162.694C217.178 192.527 192.799 216.711 162.725 216.711H60.8662C32.9589 216.711 10.0696 195.319 16.7267 168.435C23.66 140.435 39.419 104.089 74.6612 70.0934Z"
       fill="url(#paint0_linear_3_144)"
