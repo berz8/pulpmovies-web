@@ -22,6 +22,9 @@ export function MovieSearchCard({ movie }: Props) {
       </div>
       <div className="pl-3 w-[CALC(100%_-_60px)] relative z-20">
         <h1 className="text-gray-200 text-xl font-bold">{movie.title}</h1>
+        { movie.original_title !== movie.title && (
+          <h2 className="text-gray-400 text-lg italic font-bold mb-2">{movie.original_title}</h2>
+        )}
         <span className="block text-gray-400 text-sm">
           {movie.release_date && format(new Date(movie.release_date), "yyyy")}
         </span>

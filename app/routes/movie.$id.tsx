@@ -1,5 +1,5 @@
-import { defer, json, redirect } from "@remix-run/node";
-import { Await, Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
+import { json, redirect } from "@remix-run/node";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { format, intervalToDuration } from "date-fns";
 import type {
   LoaderFunctionArgs,
@@ -7,7 +7,7 @@ import type {
   HeadersFunction,
 } from "@remix-run/node";
 import type { Movie, MovieDetail, Watchlist } from "~/interfaces";
-import { Suspense, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
 import MovieRating from "~/components/movie/movieRating";
 import MovieWatchProviders from "~/components/movie/movieWatchProviders";
@@ -197,7 +197,7 @@ export default function MovieId() {
           <Link
             to={`/person/${director.id}`}
             key={director.id}
-            className="font-bold italic text-center text-gray-300 relative"
+            className="inline-block ml-1 font-bold italic text-center text-gray-300 relative"
           >
             {`${director.name}${
               filteredDirectors.length > 1 &&
@@ -276,7 +276,7 @@ export default function MovieId() {
       <h1 className="text-gray-100 text-center text-3xl px-4 -mt-12 relative font-bold">
         {movie.title}
       </h1>
-      <div className="text-center">{getDirectors(movie.credits.crew)}</div>
+      <div className="text-center px-2">{getDirectors(movie.credits.crew)}</div>
       <div className="flex px-3 pt-4">
         <div
           className="w-[100px] lg:w-[250px]"
@@ -293,6 +293,11 @@ export default function MovieId() {
           }`}
           onClick={() => setShowFullOverview(!showFullOverview)}
         >
+          {movie.original_title !== movie.title && (
+            <h2 className="text-gray-400 text-lg italic font-bold mb-2">
+              {movie.original_title}
+            </h2>
+          )}
           <p className="text-gray-300 text-sm lg:text-lg">{movie.overview}</p>
           <div
             className={`absolute bottom-0 left-0 z-0 h-8 w-full bg-gradient-to-t from-[#252D46] via-[rgba(37,45,70,0.7)] to-[rgba(37,45,70,0)] dark:from-[#222326] ${
