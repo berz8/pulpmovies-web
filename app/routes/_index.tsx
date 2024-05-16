@@ -1,12 +1,12 @@
-import { HeadersFunction, LoaderFunctionArgs, json } from "@remix-run/node";
+import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { Logo, Naming } from "../components/branding";
 import { useLoaderData } from "@remix-run/react";
 
 import type { MetaFunction } from "@remix-run/node";
-import type { Movie } from "../interfaces";
 import MovieCard from "../components/movie/movieCard";
 import { TmdbCredits } from "~/components/ui";
 import { authenticator } from "~/services/auth.server";
+import { getTrendingMovies } from "~/services/api.tmdb.server";
 import { Credits } from "~/components/ui/credits";
 
 export const meta: MetaFunction = () => [
@@ -28,18 +28,7 @@ export const meta: MetaFunction = () => [
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
-  const res = await fetch(
-    `${process.env.TMDB_API_URL}/trending/movie/week?language=en`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-      },
-    },
-  );
-
-  const movies: { results: Movie[] } = await res.json();
-
+  const movies = await getTrendingMovies();
   return json({ movies: movies.results, user });
 }
 

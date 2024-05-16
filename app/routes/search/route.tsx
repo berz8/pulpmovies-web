@@ -8,6 +8,7 @@ import { IconSearch } from "~/components/icons";
 import { MovieSearchCard } from "~/components/movie/movieSearchCard";
 import { SegmentedControls } from "~/components/ui";
 import PersonSearchCard from "~/components/person/personSearchCard";
+import { getSearchResults } from "~/services/api.tmdb.server";
 
 enum searchResultsType {
   movie = "movie",
@@ -45,17 +46,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     section: searchResultsType;
   } = { movies: [], person: [], query, section: section };
   if (query && query !== "") {
-    const res = await fetch(
-      `${process.env.TMDB_API_URL}/search/${section}?query=${query}&language=en&page=1`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-        },
-      },
-    );
-
-    const resJson: { results: Movie[] | PersonSearch[] } = await res.json();
+    const resJson = await getSearchResults(query, section);
     if (section === searchResultsType.movie)
       result.movies = resJson.results as Movie[];
     if (section === searchResultsType.person)
