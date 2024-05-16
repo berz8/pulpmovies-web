@@ -26,10 +26,6 @@ export const meta: MetaFunction = () => [
   { property: "og:site_name", content: "PulpMovies" },
 ];
 
-export const headers: HeadersFunction = () => ({
-  "Cache-Control": "private, max-age=500",
-});
-
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
   const res = await fetch(
