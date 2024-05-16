@@ -22,6 +22,7 @@ import {
 import { IconShare, IconVideo } from "~/components/icons";
 import { IconWatchlist } from "~/components/icons/watchlist";
 import { authenticator } from "~/services/auth.server";
+import { getMovie, getMovieDetail } from "~/services/api.tmdb.server";
 
 export const headers: HeadersFunction = () => ({
   "Cache-Control": "private, max-age=150",
@@ -34,16 +35,7 @@ export async function action({ request, params }: LoaderFunctionArgs) {
 
   if (!user) return null;
 
-  const res = await fetch(
-    `${process.env.TMDB_API_URL}/movie/${params.id}?language=en`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-      },
-    },
-  );
-  const movie: Movie = await res.json();
+  const movie = await getMovie(params.id)
 
   if (addToWatchlist === "true") {
     const addMovieReq = await fetch(
@@ -97,17 +89,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     watchlists = await watchlistPromise.json();
   }
 
-  const res = await fetch(
-    `${process.env.TMDB_API_URL}/movie/${params.id}?language=en&append_to_response=credits,videos,watch/providers`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-      },
-    },
-  );
-
-  const movie: MovieDetail = await res.json();
+  const movie = await getMovieDetail(params.id);
 
   if (!movie || !movie.id) {
     throw new Response("Not Found", { status: 404 });

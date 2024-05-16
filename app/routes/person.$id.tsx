@@ -5,20 +5,10 @@ import MovieCard from "~/components/movie/movieCard";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
 import { SegmentedControls, TmdbCredits } from "~/components/ui";
 import type { Movie } from "~/interfaces";
-import type { PersonDetail } from "~/interfaces/personDetail";
+import { getPersonDetail } from "~/services/api.tmdb.server";
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const res = await fetch(
-    `${process.env.TMDB_API_URL}/person/${params.id}?language=en&append_to_response=movie_credits`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-      },
-    },
-  );
-
-  const person: PersonDetail = await res.json();
+  const person = await getPersonDetail(params.id);
 
   if (!person || !person.id) {
     throw new Response("Not Found", { status: 404 });
@@ -27,11 +17,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
-  { title: data.person?.name },
-  { property: "og:title", content: data.person?.name },
+  { title: data?.person?.name },
+  { property: "og:title", content: data?.person?.name },
   {
     property: "og:image",
-    content: `https://image.tmdb.org/t/p/original${data.person.profile_path}`,
+    content: `https://image.tmdb.org/t/p/original${data?.person.profile_path}`,
   },
   { property: "og:site_name", content: "PulpMovies" },
 ];
