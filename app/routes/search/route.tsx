@@ -133,8 +133,8 @@ export default function Index() {
       </div>
       {!!(movies.length && section === searchResultsType.movie) && (
         <div className="pt-32 pb-14 m-auto md:pt-20 flex flex-col lg:flex-wrap lg:gap-4 lg:flex-row">
-          {movies.map((movie) => (
-            <MovieSearchCard key={movie.id} movie={movie} />
+          {movies.map((movie, i) => (
+            <MovieSearchCard key={movie.id} movie={movie} prefetch={i < 2} />
           ))}
         </div>
       )}
