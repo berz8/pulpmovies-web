@@ -1,33 +1,40 @@
-# node image
-FROM node:18-alpine AS base
+# Build stage
+FROM oven/bun:1 AS builder
+WORKDIR /app
+COPY package.json bun.lockb* ./
+RUN bun install --frozen-lockfile
+COPY . .
+RUN bun run build
 
-RUN npm i -g pnpm 
+# Production stage
+FROM oven/bun:1-slim AS production
+WORKDIR /app
 
-ENV NODE_ENV production
+# Create a non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 remixuser
 
-# install dependencies
-FROM base AS deps
+# Copy built assets from builder stage
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
 
-WORKDIR /web
-ADD package.json pnpm-lock.yaml  ./
-RUN pnpm install  --production=false
+# Install only production dependencies
+RUN bun install --production --frozen-lockfile
 
-# build
-FROM base AS build
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
 
-WORKDIR /web
-COPY --from=deps /web/node_modules /web/node_modules
+# Change to non-root user
+USER remixuser
 
-ADD . .
-RUN pnpm build
-RUN pnpm prune --prod
+# Expose the port the app runs on
+EXPOSE 3000
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/healthcheck || exit 1
 
-# deploy
-FROM base
-
-WORKDIR /web
-
-COPY --from=build /web ./
-
-CMD [ "pnpm", "start" ] 
+# Start the application
+CMD ["bun", "run", "start"]
