@@ -68,7 +68,7 @@ export default function Index() {
   };
 
   const debounceChange = useCallback(
-    debounce((e) => handleChange(e), 350),
+    debounce.debounce((e) => handleChange(e), 350),
     [],
   );
 

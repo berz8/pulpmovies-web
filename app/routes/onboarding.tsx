@@ -82,7 +82,7 @@ export default function Onboarding() {
   };
 
   const debounceChange = useCallback(
-    debounce((e) => submitChange(e), 350),
+    debounce.debounce((e) => submitChange(e), 350),
     []
   );
 
