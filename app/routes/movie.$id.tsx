@@ -6,7 +6,7 @@ import type {
   MetaFunction,
   HeadersFunction,
 } from "@remix-run/node";
-import type { Movie, MovieDetail, Watchlist } from "~/interfaces";
+import type { Watchlist } from "~/interfaces";
 import { useCallback, useMemo, useState } from "react";
 import MoviePosterAnimated from "~/components/movie/moviePosterAnimated";
 import MovieRating from "~/components/movie/movieRating";
@@ -35,7 +35,7 @@ export async function action({ request, params }: LoaderFunctionArgs) {
 
   if (!user) return null;
 
-  const movie = await getMovie(params.id)
+  const movie = await getMovie(params.id);
 
   if (addToWatchlist === "true") {
     const addMovieReq = await fetch(
@@ -47,7 +47,7 @@ export async function action({ request, params }: LoaderFunctionArgs) {
           Authorization: `Bearer ${user.token}`,
         },
         body: JSON.stringify({ ...movie }),
-      },
+      }
     );
     if (addMovieReq.status != 201 && addMovieReq.status != 200) {
       return redirect(`/movie/${params.id}?error=true`);
@@ -63,7 +63,7 @@ export async function action({ request, params }: LoaderFunctionArgs) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
-      },
+      }
     );
     if (res.status != 200) {
       return redirect(`/movie/${params.id}?error=true`);
@@ -84,7 +84,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
-      },
+      }
     );
     watchlists = await watchlistPromise.json();
   }
@@ -189,12 +189,12 @@ export default function MovieId() {
             }`}
           </Link>
         )),
-    [],
+    []
   );
 
   const getTrailer = useCallback((videos: Video[]) => {
     const trailer = videos.find(
-      (video) => video.type === "Trailer" && video.site === "YouTube",
+      (video) => video.type === "Trailer" && video.site === "YouTube"
     );
     if (!trailer) return null;
     return (
@@ -216,7 +216,7 @@ export default function MovieId() {
         .share({
           title: `${movie?.title} (${format(
             new Date(movie?.release_date),
-            "yyyy",
+            "yyyy"
           )})`,
           url: `https://pulpmovies.app/movie/${movie.id}`,
         })
