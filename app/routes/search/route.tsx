@@ -1,6 +1,6 @@
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { useCallback } from "react";
-import { debounce } from "lodash";
+import debounce from "lodash";
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { Movie, PersonSearch } from "~/interfaces";

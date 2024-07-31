@@ -5,7 +5,7 @@ import {
   redirect,
 } from "@remix-run/node";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
-import { debounce } from "lodash";
+import debounce from "lodash";
 import { useCallback, useState } from "react";
 import { Button } from "~/components/ui";
 import { authenticator } from "~/services/auth.server";
@@ -27,7 +27,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       `${process.env.API_URL}/user/username/${username}/check`,
       {
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
     const resJson: ApiResponse<boolean> = await res.json();
     usernameExist = resJson.result;
@@ -83,7 +83,7 @@ export default function Onboarding() {
 
   const debounceChange = useCallback(
     debounce((e) => submitChange(e), 350),
-    [],
+    []
   );
 
   const submitChange = (event: React.FormEvent<HTMLFormElement>) => {
