@@ -1,7 +1,18 @@
-import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { LoaderFunctionArgs, MetaFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { MovieSearchCard } from "~/components/movie/movieSearchCard";
 import { Movie, Watchlist } from "~/interfaces";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
+  {
+    title: `${data?.watchlist.name}`,
+  },
+  {
+    property: "og:title",
+    content: `${data?.watchlist.name}`,
+  },
+  { property: "og:site_name", content: "PulpMovies" },
+];
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const res = await fetch(`${process.env.API_URL}/watchlist/id/${params.id}`, {
